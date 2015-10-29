@@ -5,3 +5,8 @@ Comprehensive Minecraft Archive Network
 Licenced under the GPL v3
 
 Proudly supporting [#StopModReposts](http://www.stopmodreposts.org)!
+
+
+
+#Java Notes
+To get a copy of the nightly build, contact us.
