@@ -15,6 +15,7 @@ public class CMAN_upgrade
 	public String execdir = "@ERROR@";
 	public static Scanner input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
+	CMAN_remove remove = new CMAN_remove();
 	
 	public void init_config_upgrade(String mf, String vf, String ed)
 	{
@@ -45,7 +46,7 @@ public class CMAN_upgrade
 		JsonElement archive = update[1].get("Version");
 		if(current.getAsString() != archive.getAsString() && util.mod_installed(modname))
 		{
-			//remove
+			remove.remove_mod(modname);
 			//install
 		}
 		else if(!util.mod_installed(modname))
