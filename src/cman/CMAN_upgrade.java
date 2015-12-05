@@ -25,8 +25,10 @@ public class CMAN_upgrade
 	
 	public void upgrade_mod(String modname)
 	{
+		String newLine = System.getProperty("line.separator");
 		if(modname == null)
 		{
+			System.out.println("Enter mod name: ");
 			modname = input.nextLine();
 		}
 		JsonObject[] update = {util.get_installed_json(modname), util.get_json(modname)};

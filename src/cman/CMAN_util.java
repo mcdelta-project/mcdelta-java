@@ -38,6 +38,7 @@ public class CMAN_util
 	
 	public static String[] read_config()
 	{
+		String newLine = System.getProperty("line.separator");
 		String mFolder = "@ERROR@";
 		String vFolder = "@ERROR@";
 		String path = CMAN_util.class.getProtectionDomain().getCodeSource().getLocation().getPath();
@@ -70,7 +71,7 @@ public class CMAN_util
 	            }
 	            else
 	            {
-	            	System.out.print("Enter mod folder location (absolute path): ");
+	            	System.out.println("Enter mod folder location (absolute path): ");
 	            	mFolder = input.nextLine();
 	            	JsonElement mfelement = new JsonParser().parse(mFolder);
 	            	j.add("modfolder", mfelement);
@@ -82,7 +83,7 @@ public class CMAN_util
 	            }
 	            else
 	            {
-	            	System.out.print("Enter mod version folder location (absolute path): ");
+	            	System.out.println("Enter mod version folder location (absolute path): ");
 	            	vFolder = input.nextLine();
 	            	JsonElement vfelement = new JsonParser().parse(vFolder);
 	            	j.add("versionfolder", vfelement);
