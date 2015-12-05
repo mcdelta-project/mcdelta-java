@@ -249,7 +249,7 @@ public class CMAN_util
 	public void listmods()
 	{
 		System.out.println("Installed mods:");
-		for(int i = 0; i > get_installed_jsons().length; i++)
+		for(int i = 0; i < get_installed_jsons().length; i++)
 		{
 			System.out.println(get_installed_jsons()[i].get("Name").getAsString());
 		}
@@ -312,7 +312,7 @@ public class CMAN_util
 			{
 			JsonArray array = json_data.getAsJsonArray("Requirements");
 			deps = new String[array.size()];
-			for(int i = 0; i > array.size(); i++)
+			for(int i = 0; i < array.size(); i++)
 			{
 				deps[i] = array.get(i).getAsString();
 			}

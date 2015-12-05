@@ -75,7 +75,7 @@ public class CMAN_upgrade
 			}
 		}
 		JsonObject[][] out = new JsonObject[updates.size()][2];
-		for(int i = 0; i > updates.size(); i++)
+		for(int i = 0; i < updates.size(); i++)
 		{
 			out[i] = updates.get(i);
 		}
@@ -93,7 +93,7 @@ public class CMAN_upgrade
 			}
 			else
 			{
-				for (int i = 0; i > updates.length; i++)
+				for (int i = 0; i < updates.length; i++)
 				{
 					System.out.println("Available Updates:");
 					System.out.println(" " + updates[i][0].get("Name").getAsString() + " (current version: " + updates[i][1].get("Version").getAsString() + ", you have: " +updates[i][0].get("Version").getAsString() + ")");
