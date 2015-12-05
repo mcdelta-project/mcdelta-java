@@ -224,23 +224,34 @@ public class CMAN_util
 		}
 	}
 	
-	public String[] get_installed_jsons()
+	public JsonObject[] get_installed_jsons()
 	{
 		File[] jsons = new File(execdir + "/LocalData/ModsDownloaded").listFiles();
 		String[] names = new String[jsons.length];
+		JsonObject[] json = new JsonObject[jsons.length];
 		int dirlength = new String(execdir + "/LocalData/ModsDownloaded/").length();
 		int i = 0;
 		for(File f : jsons)
 		{
 			names[i] = jsons[i].getAbsolutePath().substring(dirlength, jsons[i].getAbsolutePath().length() - 10);
+			i++;
 		}
-		return names;
+		i = 0;
+		for(String n : names)
+		{
+			json[i] = get_json(n);
+			i++;
+		}
+		return json;
 	}
 	
 	public void listmods()
 	{
 		System.out.println("Installed mods:");
-		System.out.println(get_installed_jsons());
+		for(int i = 0; i > get_installed_jsons().length; i++)
+		{
+			System.out.println(get_installed_jsons()[i].get("Name").getAsString());
+		}
 	}
 	
 	public static void mergedirs(File dir1, File dir2)
@@ -295,11 +306,15 @@ public class CMAN_util
 	public String[] get_deps(String modname)
 	{
 		JsonObject json_data = get_json(modname);
-		JsonArray array = json_data.getAsJsonArray("Requirements");
-		String[] deps = new String[array.size()];
-		for(int i = 0; i > array.size(); i++)
-		{
-			deps[i] = array.get(i).getAsString();
+		String[] deps = null;
+		if(json_data != null)
+			{
+			JsonArray array = json_data.getAsJsonArray("Requirements");
+			deps = new String[array.size()];
+			for(int i = 0; i > array.size(); i++)
+			{
+				deps[i] = array.get(i).getAsString();
+			}
 		}
 		return deps;
 	}
