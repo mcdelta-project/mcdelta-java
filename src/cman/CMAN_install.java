@@ -29,6 +29,9 @@ public class CMAN_install
 	public static Scanner input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	
+	/**
+	Initialization for install.
+	*/
 	public void init_config_install(String mf, String vf, String ed)
 	{
 		modfolder = mf;
@@ -36,6 +39,9 @@ public class CMAN_install
 		execdir = ed;
 	}
 	
+	/**
+	Installs modname. Will attempt to install requirements and recommendations.
+	*/
 	public void install_mod(String modname)
 	{
 		Gson gson = new Gson();
@@ -223,6 +229,9 @@ public class CMAN_install
 		}
 	}
 	
+	/**
+	Installs requirements for a mod but not the mod itself.
+	*/
 	public void install_deps(String modname)
 	{
 		String[] deps = util.get_deps(modname);

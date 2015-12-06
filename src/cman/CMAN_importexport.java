@@ -29,6 +29,9 @@ public class CMAN_importexport
 	CMAN_util util = new CMAN_util();
 	CMAN_install install = new CMAN_install();
 	
+	/**
+	Initialization for importexport.
+	*/
 	public void init_config_install(String mf, String vf, String ed)
 	{
 		modfolder = mf;
@@ -36,6 +39,9 @@ public class CMAN_importexport
 		execdir = ed;
 	}
 	
+	/**
+	Exports installed mods into filename.modlist.
+	*/
 	public void export_mods(String filename)
 	{
 		JsonParser parser = new JsonParser();
@@ -84,6 +90,9 @@ public class CMAN_importexport
 		}
 	}
 	
+	/**
+	Insatlls mods from a .modlist file in the /LocalData/Modlists/ directory.
+	*/
 	public void import_mods(String path)
 	{
 		Gson gson = new Gson();

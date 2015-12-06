@@ -11,6 +11,9 @@ public class CMAN_remove
 	public static Scanner input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	
+	/**
+	Initialization for remove.
+	*/
 	public void init_config_remove(String mf, String vf, String ed)
 	{
 		modfolder = mf;
@@ -18,6 +21,9 @@ public class CMAN_remove
 		execdir = ed;
 	}
 	
+	/**
+	Removes installed modname.
+	*/
 	public void remove_mod(String modname)
 	{
 		if(modname == null)

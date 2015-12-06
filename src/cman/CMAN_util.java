@@ -29,6 +29,9 @@ public class CMAN_util
 	public String execdir = "@ERROR@";
 	public static Scanner input = new Scanner(System.in);
 	
+	/**
+	Initialization for util.
+	*/
 	public void init_config_util(String mf, String vf, String ed)
 	{
 		modfolder = mf;
@@ -36,6 +39,9 @@ public class CMAN_util
 		execdir = ed;
 	}
 	
+	/**
+	Reads and creates configuration file. Returns a String[] with two elements, modfolder and versionfolder.
+	*/
 	public static String[] read_config()
 	{
 		String newLine = System.getProperty("line.separator");
@@ -126,6 +132,9 @@ public class CMAN_util
 		return new String[] {mFolder, vFolder};
 	}
 	
+	/**
+	Returns the JsonObject file for the modname given.
+	*/
 	public JsonObject get_json(String modname)
 	{
 		if(!Files.exists(Paths.get(execdir + "/DATA/CMAN-Archive"), LinkOption.NOFOLLOW_LINKS))
@@ -167,6 +176,9 @@ public class CMAN_util
 		}
 	}
 	
+	/**
+	Returns the JsonObject file for the installed version of the modname given. Mod must be installed.
+	*/
 	public JsonObject get_installed_json(String modname)
 	{
 		if(!Files.exists(Paths.get(execdir + "/LocalData/ModsDownloaded"), LinkOption.NOFOLLOW_LINKS))
@@ -208,6 +220,9 @@ public class CMAN_util
 		}
 	}
 	
+	/**
+	Returns a boolean for if the modname has been installed already.
+	*/
 	public boolean mod_installed(String modname)
 	{
 		if(!Files.exists(Paths.get(execdir + "/LocalData/ModsDownloaded"), LinkOption.NOFOLLOW_LINKS))
@@ -225,6 +240,9 @@ public class CMAN_util
 		}
 	}
 	
+	/**
+	Returns an array of the json files for all of the installed mods.
+	*/
 	public JsonObject[] get_installed_jsons()
 	{
 		File[] jsons = new File(execdir + "/LocalData/ModsDownloaded").listFiles();
@@ -246,6 +264,9 @@ public class CMAN_util
 		return json;
 	}
 	
+	/**
+	Lists all of the installed mods in the console.
+	*/
 	public void listmods()
 	{
 		System.out.println("Installed mods:");
@@ -255,6 +276,9 @@ public class CMAN_util
 		}
 	}
 	
+	/**
+	Merges two directories.
+	*/
 	public static void mergedirs(File dir1, File dir2)
 	{
 		String targetDirPath = dir1.getAbsolutePath();
@@ -265,6 +289,9 @@ public class CMAN_util
 		}
 	}
 	
+	/**
+	Changes the name of an installed json.
+	*/
 	public void fix_names(String path, String oldname, String name)
 	{
 		File jar = new File(path + oldname + ".jar");
@@ -294,6 +321,9 @@ public class CMAN_util
 		}
 	}
 	
+	/**
+	Separates a String[] into one string with commas.
+	*/
 	public String display_versions(String[] versions)
 	{
 		String versionstr = "";
@@ -304,6 +334,9 @@ public class CMAN_util
 		return versionstr.substring(0, versionstr.length() - 2);
 	}
 	
+	/**
+	Returns an array of all requirements of modname.
+	*/
 	public String[] get_deps(String modname)
 	{
 		JsonObject json_data = get_json(modname);

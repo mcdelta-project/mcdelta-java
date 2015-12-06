@@ -18,6 +18,9 @@ public class CMAN_upgrade
 	CMAN_remove remove = new CMAN_remove();
 	CMAN_install install = new CMAN_install();
 	
+	/**
+	Initialization for upgrade.
+	*/
 	public void init_config_upgrade(String mf, String vf, String ed)
 	{
 		modfolder = mf;
@@ -25,6 +28,9 @@ public class CMAN_upgrade
 		execdir = ed;
 	}
 	
+	/**
+	Upgrades installed mod to latest version in archive.
+	*/
 	public void upgrade_mod(String modname)
 	{
 		String newLine = System.getProperty("line.separator");
@@ -60,6 +66,9 @@ public class CMAN_upgrade
 		}
 	}
 	
+	/**
+	Returns a 2D array. 1st coordinate is the upgrade set, 2nd has current installed version (0) and latest version (1)
+	*/
 	public JsonObject[][] get_upgrades()
 	{
 		ArrayList<JsonObject[]> updates = new ArrayList<JsonObject[]>();
@@ -84,6 +93,9 @@ public class CMAN_upgrade
 		return out;
 	}
 	
+	/**
+	Checks if upgrades are available. Full shows list of all upgradable mods in console.
+	*/
 	public void check_upgrades(boolean full)
 	{
 		JsonObject[][] updates = get_upgrades();
