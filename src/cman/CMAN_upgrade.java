@@ -16,6 +16,7 @@ public class CMAN_upgrade
 	public static Scanner input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	CMAN_remove remove = new CMAN_remove();
+	CMAN_install install = new CMAN_install();
 	
 	public void init_config_upgrade(String mf, String vf, String ed)
 	{
@@ -47,7 +48,7 @@ public class CMAN_upgrade
 		if(current.getAsString() != archive.getAsString() && util.mod_installed(modname))
 		{
 			remove.remove_mod(modname);
-			//install
+			install.install_mod(modname);
 		}
 		else if(!util.mod_installed(modname))
 		{
