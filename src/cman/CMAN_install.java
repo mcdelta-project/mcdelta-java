@@ -37,6 +37,7 @@ public class CMAN_install
 		modfolder = mf;
 		versionsfolder = vf;
 		execdir = ed;
+		this.util.init_config_util(mf, vf, ed);
 	}
 	
 	/**
@@ -51,36 +52,46 @@ public class CMAN_install
 			modname = input.nextLine();
 		}
 		
-		if(new File(execdir + "Data/CMAN-Archive/" + modname + ".json").exists())
+		if(new File(execdir + "/Data/CMAN-Archive/" + modname + ".json").exists())
 		{
 			System.out.println(modname + ".json found.");
 		}
 		else
 		{
-			System.out.println("Mod " + modname + "not found.");
+			System.out.println("Mod " + modname + " not found.");
 			return;
 		}
 		
 		JsonObject json_data = util.get_json(modname);
 		JsonElement modtype = json_data.get("Type");
+		//System.out.println(modtype.getAsString());
 		boolean IsUnstable = json_data.get("Unstable").getAsBoolean();
-		System.out.println("This mod may be unstable. Type OK to install, or anything else to cancel: ");
-		if(input.nextLine() != "OK")
+		if(IsUnstable)
 		{
-			System.out.println("Install canceled.");
-			return;
+			System.out.println("This mod may be unstable. Type OK to install, or anything else to cancel: ");
+			String temp = input.nextLine();
+			if(!temp.equals("OK"))
+			{
+				System.out.println("Install canceled.");
+				return;
+			}
 		}
 		
 		if(util.mod_installed(modname))
 		{
 			System.out.println(modname + " is already installed!");
+			return;
 		}
 		
 		File originalfile = new File(execdir + "/Data/CMAN-archive/" + modname + ".json");
 		File newfile = new File(execdir + "/LocalData/ModsDownloaded/" + modname + ".installed");
+		if(!new File(execdir + "/LocalData/ModsDownloaded/").exists())
+		{
+			new File(execdir + "/LocalData/ModsDownloaded/").mkdirs();
+		}
 		try 
 		{
-			Files.copy(new FileInputStream(originalfile), newfile.toPath());
+			Files.copy(originalfile.toPath(), newfile.toPath());
 		} 
 		catch (FileNotFoundException e) 
 		{
@@ -88,7 +99,9 @@ public class CMAN_install
 		} 
 		catch (IOException e) 
 		{
+			System.out.println(execdir);
 			System.out.println("Couldn't find \"" + modname + ".json\" or something went horribly wrong.");
+			e.printStackTrace();
 		}
 		
 		String[] requirements = util.get_deps(modname);
@@ -98,7 +111,7 @@ public class CMAN_install
 			{
 				System.out.println("You must install " + requirement + " first!");
 				System.out.println("Do you want to install it? (y or n)");
-				if(input.nextLine() == "y")
+				if(input.nextLine().equals("y"))
 				{
 					install_mod(requirement);
 				}
@@ -117,7 +130,7 @@ public class CMAN_install
 				System.out.println(modname + " recommends installing " + recommendation + "!");
 			}
 			System.out.println("Do you want to install it? (y or n)");
-			if(input.nextLine() == "y")
+			if(input.nextLine().equals("y"))
 			{
 				install_mod(recommendation);
 			}
@@ -133,12 +146,13 @@ public class CMAN_install
 			}
 		}
 		
-		if(modtype.getAsString() == "Basemod")
+		if(modtype.getAsString().equals("Basemod"))
 		{
 			System.out.println("Basemod install not currently supported in Java version.");
 		}
-		else if(modtype.getAsString() == "Forge")
+		else if(modtype.getAsString().equals("Forge"))
 		{
+			System.out.println("forge");
 			String url = json_data.get("Link").getAsString();
 			String version = json_data.get("Version").getAsString();
 			System.out.println(modname + " is at version " + version);
@@ -147,9 +161,9 @@ public class CMAN_install
 			System.out.println("Downloading " + url + " as " + file_name);
 			try 
 			{
-				link = new URL(modfolder + url);
+				link = new URL(url);
 				ReadableByteChannel rbc = Channels.newChannel(link.openStream());
-				FileOutputStream fos = new FileOutputStream(file_name);
+				FileOutputStream fos = new FileOutputStream(modfolder + "/" + file_name);
 				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 				fos.close();
 				System.out.println("Done");
@@ -157,6 +171,7 @@ public class CMAN_install
 			catch (MalformedURLException e) 
 			{
 				System.out.println("Something is wrong with the url, Please update the CMAN Archive");
+				e.printStackTrace();
 			}
 			catch (FileNotFoundException e) 
 			{
@@ -167,7 +182,7 @@ public class CMAN_install
 				e.printStackTrace();
 			}
 		}
-		else if(modtype.getAsString() == "Liteloader")
+		else if(modtype.getAsString().equals("Liteloader"))
 		{
 			String url = json_data.get("Link").getAsString();
 			String version = json_data.get("Version").getAsString();
@@ -197,7 +212,7 @@ public class CMAN_install
 				e.printStackTrace();
 			}
 		}
-		else if(modtype.getAsString() == "Installer")
+		else if(modtype.getAsString().equals("Installer"))
 		{
 			String url = json_data.get("Link").getAsString();
 			String version = json_data.get("Version").getAsString();

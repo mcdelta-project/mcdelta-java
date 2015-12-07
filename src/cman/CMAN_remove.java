@@ -19,6 +19,7 @@ public class CMAN_remove
 		modfolder = mf;
 		versionsfolder = vf;
 		execdir = ed;
+		this.util.init_config_util(mf, vf, ed);
 	}
 	
 	/**
@@ -37,7 +38,7 @@ public class CMAN_remove
 			System.out.println("Either " + modname + " is not installed, or something went horribly wrong.");
 			return;
 		}
-		if(util.get_json(modname).get("Type").getAsString() == "Forge" || util.get_json(modname).get("Type").getAsString() == "Liteloader")
+		if((util.get_json(modname).get("Type").getAsString().equals("Forge")) || (util.get_json(modname).get("Type").getAsString().equals("Liteloader")))
 		{
 			File[] mods = new File(modfolder).listFiles();
 			for (File f : mods)
@@ -45,7 +46,7 @@ public class CMAN_remove
 				if(f.getName().startsWith(modname + "-") && f.getName().endsWith(".jar"))
 				{
 					System.out.println("Delete \"" + f.getName() + "\"? Type OK to delete, or anything else to skip: ");
-					if(input.nextLine() == "OK")
+					if(input.nextLine().equals("OK"))
 					{
 						f.delete();
 						System.out.println("Deleted " + f.getName() + ".");

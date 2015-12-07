@@ -42,7 +42,7 @@ public class CMAN_util
 	/**
 	Reads and creates configuration file. Returns a String[] with two elements, modfolder and versionfolder.
 	*/
-	public static String[] read_config()
+	public String[] read_config()
 	{
 		String newLine = System.getProperty("line.separator");
 		String mFolder = "@ERROR@";
@@ -60,7 +60,7 @@ public class CMAN_util
 		
 		decodedPath.substring(0, decodedPath.length() - 13);
 		
-		File jsonfile = new File(decodedPath + "LocalData/config.json");
+		File jsonfile = new File(execdir + "/LocalData/config.json");
 		Gson gson = new Gson();
 		if(jsonfile.exists())
 		{
@@ -82,10 +82,10 @@ public class CMAN_util
 	            	JsonElement mfelement = new JsonParser().parse(mFolder);
 	            	j.add("modfolder", mfelement);
 	            }
-	            JsonElement vfolder = j.get("versionfolder");
+	            JsonElement vfolder = j.get("versionsfolder");
 	            if(!vfolder.isJsonNull())
 	            {
-	            	mFolder = vfolder.getAsString();
+	            	vFolder = vfolder.getAsString();
 	            }
 	            else
 	            {
@@ -119,7 +119,7 @@ public class CMAN_util
             try 
             {
             	FileWriter fw = new FileWriter(jsonfile, false);
-				fw.write("{\"modfolder\":\"" + mFolder + ",\"versionsfolder\":\"" + vFolder + "\"}");
+				fw.write("{\"modfolder\":\"" + mFolder + "\",\"versionsfolder\":\"" + vFolder + "\"}");
 				fw.close();
 			} 
             catch (IOException e) 
@@ -137,12 +137,13 @@ public class CMAN_util
 	*/
 	public JsonObject get_json(String modname)
 	{
-		if(!Files.exists(Paths.get(execdir + "/DATA/CMAN-Archive"), LinkOption.NOFOLLOW_LINKS))
+		//System.out.println(execdir + "/Data/CMAN-Archive");
+		if(!Files.exists(Paths.get(execdir + "/Data/CMAN-Archive"), LinkOption.NOFOLLOW_LINKS))
 		{
 			System.out.println("CMAN archive not found. Please update the CMAN archive");
 			return null;
 		}
-		File jsonfile = new File(execdir + "/DATA/CMAN-Archive" + modname + ".json");
+		File jsonfile = new File(execdir + "/Data/CMAN-Archive/" + modname + ".json");
 		if(jsonfile.exists())
 		{
             JsonParser parser = new JsonParser();
@@ -165,7 +166,7 @@ public class CMAN_util
 			} 
 			catch (FileNotFoundException e) 
 			{
-				System.out.println("\"" + modname + "\"" + "doesn't exist.");
+				System.out.println("\"" + modname + "\"" + " doesn't exist.");
 				return null;
 			}
 		}
@@ -229,8 +230,7 @@ public class CMAN_util
 		{
 			return false;
 		}
-		
-		if(new File(execdir + "/LocalData/ModsDownloaded" + modname + ".installed").exists())
+		if(new File(execdir + "/LocalData/ModsDownloaded/" + modname + ".installed").exists())
 		{
 			return true;
 		}
