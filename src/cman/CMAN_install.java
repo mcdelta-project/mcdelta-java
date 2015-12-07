@@ -192,9 +192,9 @@ public class CMAN_install
 			System.out.println("Downloading " + url + " as " + file_name);
 			try 
 			{
-				link = new URL(modfolder + url);
+				link = new URL(url);
 				ReadableByteChannel rbc = Channels.newChannel(link.openStream());
-				FileOutputStream fos = new FileOutputStream(file_name);
+				FileOutputStream fos = new FileOutputStream(modfolder + "/" + file_name);
 				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 				fos.close();
 				System.out.println("Done");
@@ -222,9 +222,9 @@ public class CMAN_install
 			System.out.println("Downloading " + url + " as " + file_name);
 			try 
 			{
-				link = new URL(execdir + url);
+				link = new URL(url);
 				ReadableByteChannel rbc = Channels.newChannel(link.openStream());
-				FileOutputStream fos = new FileOutputStream(file_name);
+				FileOutputStream fos = new FileOutputStream(modfolder + "/" + file_name);
 				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 				fos.close();
 				System.out.println("Done. Please run the installer.");
