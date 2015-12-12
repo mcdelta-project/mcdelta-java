@@ -61,6 +61,10 @@ public class CMAN_util
 		decodedPath.substring(0, decodedPath.length() - 13);
 		
 		File jsonfile = new File(execdir + "/LocalData/config.json");
+		if(!new File(execdir + "/LocalData").exists())
+		{
+			new File(execdir + "/LocalData").mkdir();
+		}
 		Gson gson = new Gson();
 		if(jsonfile.exists())
 		{
@@ -245,23 +249,27 @@ public class CMAN_util
 	*/
 	public JsonObject[] get_installed_jsons()
 	{
-		File[] jsons = new File(execdir + "/LocalData/ModsDownloaded").listFiles();
-		String[] names = new String[jsons.length];
-		JsonObject[] json = new JsonObject[jsons.length];
-		int dirlength = new String(execdir + "/LocalData/ModsDownloaded/").length();
-		int i = 0;
-		for(File f : jsons)
+		if(new File(execdir + "/LocalData/ModsDownloaded").exists())
 		{
-			names[i] = jsons[i].getAbsolutePath().substring(dirlength, jsons[i].getAbsolutePath().length() - 10);
-			i++;
+			File[] jsons = new File(execdir + "/LocalData/ModsDownloaded").listFiles();
+			String[] names = new String[jsons.length];
+			JsonObject[] json = new JsonObject[jsons.length];
+			int dirlength = new String(execdir + "/LocalData/ModsDownloaded/").length();
+			int i = 0;
+			for(File f : jsons)
+			{
+				names[i] = jsons[i].getAbsolutePath().substring(dirlength, jsons[i].getAbsolutePath().length() - 10);
+				i++;
+			}
+			i = 0;
+			for(String n : names)
+			{
+				json[i] = get_json(n);
+				i++;
+			}
+			return json;
 		}
-		i = 0;
-		for(String n : names)
-		{
-			json[i] = get_json(n);
-			i++;
-		}
-		return json;
+		return null;
 	}
 	
 	/**

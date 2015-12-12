@@ -26,6 +26,9 @@ public class CMAN_upgrade
 		modfolder = mf;
 		versionsfolder = vf;
 		execdir = ed;
+		this.util.init_config_util(mf, vf, ed);
+		this.remove.init_config_remove(mf, vf, ed);
+		this.install.init_config_install(mf, vf, ed);
 	}
 	
 	/**
@@ -72,25 +75,29 @@ public class CMAN_upgrade
 	public JsonObject[][] get_upgrades()
 	{
 		ArrayList<JsonObject[]> updates = new ArrayList<JsonObject[]>();
-		JsonObject[] mods = util.get_installed_jsons();
-		for(JsonObject mod : mods)
+		if(!(util.get_installed_jsons() == null))
 		{
-			if(mod != null)
+			JsonObject[] mods = util.get_installed_jsons();
+			for(JsonObject mod : mods)
 			{
-				JsonObject json_data = util.get_json(mod.get("Name").getAsString());
-				if(json_data != null && json_data.get("Version").getAsString() != mod.get("Version").getAsString())
+				if(mod != null)
 				{
-					JsonObject[] temp = {mod, json_data};
-					updates.add(temp);
+					JsonObject json_data = util.get_json(mod.get("Name").getAsString());
+					if(json_data != null && json_data.get("Version").getAsString() != mod.get("Version").getAsString())
+					{
+						JsonObject[] temp = {mod, json_data};
+						updates.add(temp);
+					}
 				}
 			}
+			JsonObject[][] out = new JsonObject[updates.size()][2];
+			for(int i = 0; i < updates.size(); i++)
+			{
+				out[i] = updates.get(i);
+			}
+			return out;
 		}
-		JsonObject[][] out = new JsonObject[updates.size()][2];
-		for(int i = 0; i < updates.size(); i++)
-		{
-			out[i] = updates.get(i);
-		}
-		return out;
+		return new JsonObject[0][2];
 	}
 	
 	/**

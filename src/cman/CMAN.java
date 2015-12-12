@@ -42,6 +42,8 @@ public class CMAN
 	CMAN_util util = new CMAN_util();
 	CMAN_install install = new CMAN_install();
 	CMAN_remove remove = new CMAN_remove();
+	CMAN_upgrade upgrade = new CMAN_upgrade();
+	CMAN_importexport importexport = new CMAN_importexport();
 	
 	public void delete_recursivly(String dir) throws IOException
 	{
@@ -67,10 +69,11 @@ public class CMAN
 		URL url;
 		try 
 		{
-			url = new URL("http://raw.githubusercontent.com/Comprehensive-Minecraft-Archive-Network/CMAN-Java/master/version.txt");
-			Scanner s = new Scanner(url.openStream());
-			String latestversion = s.nextLine();
-			if(latestversion != version)
+			//url = new URL("http://raw.githubusercontent.com/Comprehensive-Minecraft-Archive-Network/CMAN-Java/master/version.txt");
+			url = new URL("https://raw.githubusercontent.com/randomtestfive/CMAN-Java/master/version.txt");
+			Scanner s = new Scanner(url.openStream(), "UTF-8");
+			String latestversion = s.next();
+			if(!latestversion.equals(version))
 			{
 				System.out.println("WARNING! YOU ARE USING OLD VERSION " + version + "! NEWEST VERSION IS " + latestversion + "!");
 			}
@@ -83,6 +86,7 @@ public class CMAN
 		catch (IOException e) 
 		{
 			System.out.println("Something is wrong with the url?");
+			e.printStackTrace();
 		}	
 	}
 	
@@ -180,9 +184,30 @@ public class CMAN
 		}
 	}
 	
+	public void print_help()
+	{
+		System.out.println("Commands:");
+		System.out.println(" install 'mod': install the mod 'mod'");
+		System.out.println(" installm: install multiple mods");
+		System.out.println(" info 'mod': get info for the mod 'mod'");
+		System.out.println(" remove 'mod': remove the mod 'mod'");
+		System.out.println(" removem: remove multiple mods");
+		System.out.println(" upgrade 'mod': upgrade the mod 'mod'");
+		System.out.println(" upgradem: upgrade multiple mods");
+		System.out.println(" upgradeall: upgrade all outdated mods");
+		System.out.println(" upgrades: list available mod upgrades");
+		System.out.println(" update: update the CMAN archive");
+		System.out.println(" help: display this help message");
+		System.out.println(" version: display the CMAN version number");
+		System.out.println(" list: list installed mods");
+		System.out.println(" export 'name': export a modlist with the name 'name' , which can be imported later");
+		System.out.println(" import 'pathtomodlist': import the modlist 'pathtomodlist'");
+		System.out.println(" exit: exit CMAN");
+	}
+	
 	public static void main(String[] args) 
 	{
-		String path = CMAN_util.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		String path = CMAN.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 		String decodedPath = System.getProperty("user.dir");
 		try 
 		{
@@ -193,18 +218,25 @@ public class CMAN
 			e.printStackTrace();
 		}
 		CMAN cman = new CMAN();
-		cman.execdir = decodedPath;
-		System.out.println(decodedPath);
-		//cman.update_archive();
+		cman.execdir = decodedPath.substring(1, decodedPath.length() - 1);
+		//System.out.println(decodedPath);
 		cman.util.execdir = cman.execdir;
 		String[] places = cman.util.read_config();
 		cman.util.init_config_util(places[0], places[1], cman.execdir);
 		cman.install.init_config_install(places[0], places[1], cman.execdir);
 		cman.remove.init_config_remove(places[0], places[1], cman.execdir);
-		//cman.get_info("DeeperCaves");
-		//cman.remove.remove_mod("DeeperCaves");
-		//cman.install.install_mod("DeeperCaves");
-		//System.out.println("Something");
+		cman.upgrade.init_config_upgrade(places[0], places[1], cman.execdir);
+		cman.importexport.init_config_importexport(places[0], places[1], cman.execdir);
+		cman.update_archive();
+		System.out.println("CMAN-Java v" + cman.version);
+		cman.check_for_updates();
+		if(cman.upgrade.get_upgrades().length != 0)
+		{
+			System.out.println("The following upgrades are availible:");
+			for(JsonObject[] upgrade : cman.upgrade.get_upgrades())
+			{	
+				System.out.println(" " + upgrade[0].get("Name").getAsString() + "(current version: " + upgrade[1].get("Version").getAsString() + ", you have: " + upgrade[0].get("Version").getAsString() + ")");
+			}
+		}
 	}
-
 }

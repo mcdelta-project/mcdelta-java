@@ -32,11 +32,13 @@ public class CMAN_importexport
 	/**
 	Initialization for importexport.
 	*/
-	public void init_config_install(String mf, String vf, String ed)
+	public void init_config_importexport(String mf, String vf, String ed)
 	{
 		modfolder = mf;
 		versionsfolder = vf;
 		execdir = ed;
+		this.util.init_config_util(mf, vf, ed);
+		this.install.init_config_install(mf, vf, ed);
 	}
 	
 	/**
