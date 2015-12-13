@@ -238,5 +238,240 @@ public class CMAN
 				System.out.println(" " + upgrade[0].get("Name").getAsString() + "(current version: " + upgrade[1].get("Version").getAsString() + ", you have: " + upgrade[0].get("Version").getAsString() + ")");
 			}
 		}
+		int i = 0;
+		for(String arg : args)
+		{
+			if(arg.equals("-i") || arg.equals("--install"))
+			{
+				int o = 1;
+				while(!args[i + o].startsWith("-"))
+				{
+					cman.install.install_mod(args[i+o]);
+					o++;
+				}
+			}
+			if(arg.equals("-r") || arg.equals("--remove"))
+			{
+				int o = 1;
+				while(!args[i + o].startsWith("-"))
+				{
+					cman.remove.remove_mod(args[i+o]);
+					o++;
+				}
+			}
+			if(arg.equals("-u") || arg.equals("--upgrade"))
+			{
+				int o = 1;
+				while(!args[i + o].startsWith("-"))
+				{
+					cman.upgrade.upgrade_mod(args[i+o]);
+					o++;
+				}
+			}
+			if(arg.equals("--info"))
+			{
+				int o = 1;
+				while(!args[i + o].startsWith("-"))
+				{
+					cman.get_info(args[i + o]);
+					o++;
+				}
+			}
+			if(arg.equals("-e") || arg.equals("--export"))
+			{
+				cman.importexport.export_mods(args[i + 1]);
+			}
+			if(arg.equals("--import"))
+			{
+				cman.importexport.import_mods(args[i + 1]);
+			}
+			i++;
+		}
+		cman.print_help();
+		
+		while(true)
+		{
+			System.out.print("> ");
+			String command = input.nextLine();
+			if(command.split(" ")[0].equals("update"))
+			{
+				cman.update_archive();
+			}
+			else if(command.split(" ")[0].equals("upgrades"))
+			{
+				cman.update_archive();
+				cman.upgrade.check_upgrades(true);
+			}
+			else if(command.split(" ")[0].equals("upgrade"))
+			{
+				if(command.split(" ").length == 2 && !command.split(" ")[1].equals(""))
+				{
+					String mod = command.split(" ")[1];
+					cman.update_archive();
+					cman.upgrade.upgrade_mod(mod);
+				}
+				else if(command.split(" ").length == 1)
+				{
+					cman.update_archive();
+					cman.upgrade.upgrade_mod(null);
+				}
+				else
+				{
+					System.out.println("Invalid command syntax.");
+				}
+			}
+			else if(command.split(" ")[0].equals("upgradeall"))
+			{
+				cman.update_archive();
+				JsonObject[][] updates = cman.upgrade.get_upgrades();
+				if(updates.length == 0)
+				{
+					System.out.println("All mods up to date.");
+				}
+				else
+				{
+					for(JsonObject[] update : updates)
+					{
+						cman.upgrade.upgrade_mod(update[0].get("Name").getAsString());
+					}
+				}
+			}
+			else if(command.split(" ")[0].equals("install"))
+			{
+				if(command.split(" ").length == 2 && !command.split(" ")[1].equals(""))
+				{
+					String mod = command.split(" ")[1];
+					cman.update_archive();
+					cman.install.install_mod(mod);
+				}
+				else if(command.split(" ").length == 1)
+				{
+					cman.update_archive();
+					cman.install.install_mod(null);
+				}
+				else
+				{
+					System.out.println("Invalid command syntax.");
+				}
+			}
+			else if(command.split(" ")[0].equals("remove"))
+			{
+				if(command.split(" ").length == 2 && !command.split(" ")[1].equals(""))
+				{
+					String mod = command.split(" ")[1];
+					cman.update_archive();
+					cman.remove.remove_mod(mod);
+				}
+				else if(command.split(" ").length == 1)
+				{
+					cman.update_archive();
+					cman.remove.remove_mod(null);
+				}
+				else
+				{
+					System.out.println("Invalid command syntax.");
+				}
+			}
+			else if(command.split(" ")[0].equals("installm") || command.split(" ")[0].equals("installmany"))
+			{
+				if(command.split(" ").length >= 2)
+				{
+					String[] modslist = command.split(" ");
+					cman.update_archive();
+					for(String mod : modslist)
+					{
+						System.out.println("Attempting to install " + mod);
+						cman.install.install_mod(mod);
+					}
+				}
+				else
+				{
+					System.out.println("Invalid command syntax.");
+				}
+			}
+			else if(command.split(" ")[0].equals("removem") || command.split(" ")[0].equals("removemany"))
+			{
+				if(command.split(" ").length >= 2)
+				{
+					String[] modslist = command.split(" ");
+					cman.update_archive();
+					for(String mod : modslist)
+					{
+						System.out.println("Attempting to remove " + mod);
+						cman.remove.remove_mod(mod);
+					}
+				}
+				else
+				{
+					System.out.println("Invalid command syntax.");
+				}
+			}
+			else if(command.split(" ")[0].equals("upgradem") || command.split(" ")[0].equals("upgrademany"))
+			{
+				if(command.split(" ").length >= 2)
+				{
+					String[] modslist = command.split(" ");
+					cman.update_archive();
+					for(String mod : modslist)
+					{
+						System.out.println("Attempting to upgrade " + mod);
+						cman.upgrade.upgrade_mod(mod);
+					}
+				}
+				else
+				{
+					System.out.println("Invalid command syntax.");
+				}
+			}
+			else if(command.split(" ")[0].equals("export"))
+			{
+				if(command.split(" ").length == 2 && !command.split(" ")[1].equals(""))
+				{
+					String name = command.split(" ")[1];
+					cman.update_archive();
+					cman.importexport.export_mods(name);
+				}
+				else if(command.split(" ").length == 1)
+				{
+					cman.update_archive();
+					cman.importexport.export_mods(null);
+				}
+				else
+				{
+					System.out.println("Invalid command syntax.");
+				}
+			}
+			else if(command.split(" ")[0].equals("import"))
+			{
+				if(command.split(" ").length == 2 && !command.split(" ")[1].equals(""))
+				{
+					String name = command.split(" ")[1];
+					cman.update_archive();
+					cman.importexport.import_mods(name);
+				}
+				else if(command.split(" ").length == 1)
+				{
+					cman.update_archive();
+					cman.importexport.import_mods(null);
+				}
+				else
+				{
+					System.out.println("Invalid command syntax.");
+				}
+			}
+			else if(command.split(" ")[0].equals("list"))
+			{
+				cman.util.listmods();
+			}
+			else if(command.split(" ")[0].equals("help") || command.split(" ")[0].equals("?"))
+			{
+				cman.print_help();
+			}
+			else if(command.split(" ")[0].equals("")){}
+			else
+			{
+				System.out.println("Unknown command");
+			}
+		}
 	}
 }

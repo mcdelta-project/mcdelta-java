@@ -100,7 +100,7 @@ public class CMAN_importexport
 		Gson gson = new Gson();
 		if(path == null)
 		{
-			System.out.println("Please enter the name of the modlist.");
+			System.out.print("Please enter the name of the modlist.");
 			path = execdir + "/LocalData/Modlists/" + input.nextLine() + ".modlist";
 		}
 		

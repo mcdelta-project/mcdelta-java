@@ -154,8 +154,10 @@ public class CMAN_util
             JsonElement jsonElement;
 			try 
 			{
-				jsonElement = parser.parse(new FileReader(jsonfile.getAbsoluteFile()));
+				FileReader r = new FileReader(jsonfile.getAbsoluteFile());
+				jsonElement = parser.parse(r);
 				JsonObject j = jsonElement.getAsJsonObject();
+				r.close();
 				return j;
 			} 
 			catch (JsonIOException e) 
@@ -171,6 +173,9 @@ public class CMAN_util
 			catch (FileNotFoundException e) 
 			{
 				System.out.println("\"" + modname + "\"" + " doesn't exist.");
+				return null;
+			} catch (IOException e) 
+			{
 				return null;
 			}
 		}

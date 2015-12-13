@@ -29,7 +29,7 @@ public class CMAN_remove
 	{
 		if(modname == null)
 		{
-			System.out.println("Enter mod name: ");
+			System.out.print("Enter mod name: ");
 			modname = input.nextLine();
 		}
 		System.out.println("Removing file for mod in ModsDownloaded");
@@ -45,7 +45,7 @@ public class CMAN_remove
 			{
 				if(f.getName().startsWith(modname + "-") && f.getName().endsWith(".jar"))
 				{
-					System.out.println("Delete \"" + f.getName() + "\"? Type OK to delete, or anything else to skip: ");
+					System.out.print("Delete \"" + f.getName() + "\"? Type OK to delete, or anything else to skip: ");
 					if(input.nextLine().equals("OK"))
 					{
 						f.delete();

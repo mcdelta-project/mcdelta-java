@@ -48,7 +48,7 @@ public class CMAN_install
 		Gson gson = new Gson();
 		if(modname == null)
 		{
-			System.out.println("Enter mod name: ");
+			System.out.print("Enter mod name: ");
 			modname = input.nextLine();
 		}
 		
@@ -68,7 +68,7 @@ public class CMAN_install
 		boolean IsUnstable = json_data.get("Unstable").getAsBoolean();
 		if(IsUnstable)
 		{
-			System.out.println("This mod may be unstable. Type OK to install, or anything else to cancel: ");
+			System.out.print("This mod may be unstable. Type OK to install, or anything else to cancel: ");
 			String temp = input.nextLine();
 			if(!temp.equals("OK"))
 			{
@@ -110,7 +110,7 @@ public class CMAN_install
 			if(!new File(execdir + "/LocalData/ModsDownloaded/" + requirement + ".installed").exists())
 			{
 				System.out.println("You must install " + requirement + " first!");
-				System.out.println("Do you want to install it? (y or n)");
+				System.out.print("Do you want to install it? (y or n)");
 				if(input.nextLine().equals("y"))
 				{
 					install_mod(requirement);
@@ -129,7 +129,7 @@ public class CMAN_install
 			{
 				System.out.println(modname + " recommends installing " + recommendation + "!");
 			}
-			System.out.println("Do you want to install it? (y or n)");
+			System.out.print("Do you want to install it? (y or n)");
 			if(input.nextLine().equals("y"))
 			{
 				install_mod(recommendation);
