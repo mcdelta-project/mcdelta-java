@@ -33,7 +33,7 @@ import com.google.gson.JsonObject;
 
 public class CMAN 
 {
-	String version = "0.6.0";
+	String version = "1.0.0";
 	
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
@@ -44,7 +44,7 @@ public class CMAN
 	CMAN_remove remove = new CMAN_remove();
 	CMAN_upgrade upgrade = new CMAN_upgrade();
 	CMAN_importexport importexport = new CMAN_importexport();
-	static Inputs input = new Inputs("0.6.0");
+	static Inputs input = new Inputs("1.0.0");
 	
 	public void delete_recursivly(String dir) throws IOException
 	{
@@ -70,8 +70,8 @@ public class CMAN
 		URL url;
 		try 
 		{
-			//url = new URL("http://raw.githubusercontent.com/Comprehensive-Minecraft-Archive-Network/CMAN-Java/master/version.txt");
-			url = new URL("https://raw.githubusercontent.com/randomtestfive/CMAN-Java/master/version.txt");
+			url = new URL("http://raw.githubusercontent.com/Comprehensive-Minecraft-Archive-Network/CMAN-Java/master/version.txt");
+			//url = new URL("https://raw.githubusercontent.com/randomtestfive/CMAN-Java/master/version.txt");
 			Scanner s = new Scanner(url.openStream(), "UTF-8");
 			String latestversion = s.next();
 			if(!latestversion.equals(version))
