@@ -25,7 +25,7 @@ public class CMAN_importexport
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
-	public static Scanner input = new Scanner(System.in);
+	//public static Scanner CMAN.input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	CMAN_install install = new CMAN_install();
 	
@@ -50,7 +50,7 @@ public class CMAN_importexport
 		if(filename == null)
 		{
 			System.out.println("What would you like your new modlist to be called?");
-			filename = input.nextLine();
+			filename = CMAN.input.nextLine();
 		}
 		if(new File(execdir + "/LocalData/ModsDownloaded").exists())
 		{
@@ -101,7 +101,7 @@ public class CMAN_importexport
 		if(path == null)
 		{
 			System.out.print("Please enter the name of the modlist.");
-			path = execdir + "/LocalData/Modlists/" + input.nextLine() + ".modlist";
+			path = execdir + "/LocalData/Modlists/" + CMAN.input.nextLine() + ".modlist";
 		}
 		
 		if(new File(path).exists())

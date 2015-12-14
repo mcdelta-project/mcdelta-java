@@ -38,12 +38,13 @@ public class CMAN
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
-	public static Scanner input = new Scanner(System.in);
+	//public static Scanner input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	CMAN_install install = new CMAN_install();
 	CMAN_remove remove = new CMAN_remove();
 	CMAN_upgrade upgrade = new CMAN_upgrade();
 	CMAN_importexport importexport = new CMAN_importexport();
+	static Inputs input = new Inputs("0.6.0");
 	
 	public void delete_recursivly(String dir) throws IOException
 	{
@@ -205,9 +206,11 @@ public class CMAN
 		System.out.println(" exit: exit CMAN");
 	}
 	
-	public static void main(String[] args) 
+	public static void main(String[] args) throws IOException 
 	{
-		String path = CMAN.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		CMAN cman = new CMAN();
+		String path = CMAN.class.getProtectionDomain().getCodeSource().getLocation().toString();
+		System.out.println(path);
 		String decodedPath = System.getProperty("user.dir");
 		try 
 		{
@@ -217,9 +220,9 @@ public class CMAN
 		{
 			e.printStackTrace();
 		}
-		CMAN cman = new CMAN();
-		cman.execdir = decodedPath.substring(1, decodedPath.length() - 1);
+		cman.execdir = new java.io.File( "." ).getCanonicalPath(); //decodedPath.substring(1, decodedPath.length() - 1);
 		//System.out.println(decodedPath);
+		//v.text.setText(cman.execdir);
 		cman.util.execdir = cman.execdir;
 		String[] places = cman.util.read_config();
 		cman.util.init_config_util(places[0], places[1], cman.execdir);
@@ -466,6 +469,10 @@ public class CMAN
 			else if(command.split(" ")[0].equals("help") || command.split(" ")[0].equals("?"))
 			{
 				cman.print_help();
+			}
+			else if(command.split(" ")[0].equals("exit"))
+			{
+				return;
 			}
 			else if(command.split(" ")[0].equals("")){}
 			else

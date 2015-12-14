@@ -8,7 +8,7 @@ public class CMAN_remove
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
-	public static Scanner input = new Scanner(System.in);
+	//public static Scanner CMAN.input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	
 	/**
@@ -30,7 +30,7 @@ public class CMAN_remove
 		if(modname == null)
 		{
 			System.out.print("Enter mod name: ");
-			modname = input.nextLine();
+			modname = CMAN.input.nextLine();
 		}
 		System.out.println("Removing file for mod in ModsDownloaded");
 		if(!new File(execdir + "/LocalData/ModsDownloaded/" + modname + ".installed").delete())
@@ -46,7 +46,7 @@ public class CMAN_remove
 				if(f.getName().startsWith(modname + "-") && f.getName().endsWith(".jar"))
 				{
 					System.out.print("Delete \"" + f.getName() + "\"? Type OK to delete, or anything else to skip: ");
-					if(input.nextLine().equals("OK"))
+					if(CMAN.input.nextLine().equals("OK"))
 					{
 						f.delete();
 						System.out.println("Deleted " + f.getName() + ".");

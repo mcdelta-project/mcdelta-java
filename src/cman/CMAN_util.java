@@ -27,7 +27,7 @@ public class CMAN_util
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
-	public static Scanner input = new Scanner(System.in);
+	//static Inputs CMAN.input = CMAN.CMAN.input;
 	
 	/**
 	Initialization for util.
@@ -47,7 +47,10 @@ public class CMAN_util
 		String newLine = System.getProperty("line.separator");
 		String mFolder = "@ERROR@";
 		String vFolder = "@ERROR@";
-		String path = CMAN_util.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		String path = CMAN_util.class.getProtectionDomain().getCodeSource().getLocation().toString();
+		Path currentRelativePath = Paths.get("");
+		String s = currentRelativePath.toAbsolutePath().toString();
+		System.out.println("Current relative path is: " + s);
 		String decodedPath = System.getProperty("user.dir");
 		try 
 		{
@@ -82,7 +85,7 @@ public class CMAN_util
 	            else
 	            {
 	            	System.out.println("Enter mod folder location (absolute path): ");
-	            	mFolder = input.nextLine();
+	            	mFolder = CMAN.input.nextLine();
 	            	JsonElement mfelement = new JsonParser().parse(mFolder);
 	            	j.add("modfolder", mfelement);
 	            }
@@ -94,7 +97,7 @@ public class CMAN_util
 	            else
 	            {
 	            	System.out.println("Enter mod version folder location (absolute path): ");
-	            	vFolder = input.nextLine();
+	            	vFolder = CMAN.input.nextLine();
 	            	JsonElement vfelement = new JsonParser().parse(vFolder);
 	            	j.add("versionfolder", vfelement);
 	            }
@@ -116,9 +119,9 @@ public class CMAN_util
 		{
 			System.out.println("Config file not found.");
 			System.out.print("Enter mod folder location (absolute path): ");
-			mFolder = input.nextLine();
+			mFolder = CMAN.input.nextLine();
 			System.out.print("Enter mod versions folder location (absolute path): ");
-			vFolder = input.nextLine();
+			vFolder = CMAN.input.nextLine();
             
             try 
             {

@@ -13,7 +13,7 @@ public class CMAN_upgrade
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
-	public static Scanner input = new Scanner(System.in);
+	//public static Scanner CMAN.input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	CMAN_remove remove = new CMAN_remove();
 	CMAN_install install = new CMAN_install();
@@ -40,7 +40,7 @@ public class CMAN_upgrade
 		if(modname == null)
 		{
 			System.out.println("Enter mod name: ");
-			modname = input.nextLine();
+			modname = CMAN.input.nextLine();
 		}
 		JsonObject[] update = {util.get_installed_json(modname), util.get_json(modname)};
 		if(new File(execdir + "/LocalData/ModsDownloaded" + modname + ".installed").exists())

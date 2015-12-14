@@ -26,7 +26,7 @@ public class CMAN_install
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
-	public static Scanner input = new Scanner(System.in);
+	//public static Scanner CMAN.input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	
 	/**
@@ -49,7 +49,7 @@ public class CMAN_install
 		if(modname == null)
 		{
 			System.out.print("Enter mod name: ");
-			modname = input.nextLine();
+			modname = CMAN.input.nextLine();
 		}
 		
 		if(new File(execdir + "/Data/CMAN-Archive/" + modname + ".json").exists())
@@ -69,7 +69,7 @@ public class CMAN_install
 		if(IsUnstable)
 		{
 			System.out.print("This mod may be unstable. Type OK to install, or anything else to cancel: ");
-			String temp = input.nextLine();
+			String temp = CMAN.input.nextLine();
 			if(!temp.equals("OK"))
 			{
 				System.out.println("Install canceled.");
@@ -111,7 +111,7 @@ public class CMAN_install
 			{
 				System.out.println("You must install " + requirement + " first!");
 				System.out.print("Do you want to install it? (y or n)");
-				if(input.nextLine().equals("y"))
+				if(CMAN.input.nextLine().equals("y"))
 				{
 					install_mod(requirement);
 				}
@@ -130,7 +130,7 @@ public class CMAN_install
 				System.out.println(modname + " recommends installing " + recommendation + "!");
 			}
 			System.out.print("Do you want to install it? (y or n)");
-			if(input.nextLine().equals("y"))
+			if(CMAN.input.nextLine().equals("y"))
 			{
 				install_mod(recommendation);
 			}
