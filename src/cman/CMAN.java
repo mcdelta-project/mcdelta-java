@@ -46,24 +46,7 @@ public class CMAN
 	CMAN_importexport importexport = new CMAN_importexport();
 	static Inputs input = new Inputs("1.0.0");
 	
-	public void delete_recursivly(String dir) throws IOException
-	{
-		Path directory = Paths.get(dir);
-		   Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
-			   @Override
-			   public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				   Files.delete(file);
-				   return FileVisitResult.CONTINUE;
-			   }
 
-			   @Override
-			   public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				   Files.delete(dir);
-				   return FileVisitResult.CONTINUE;
-			   }
-
-		   });
-	}
 	
 	public void check_for_updates()
 	{
@@ -97,7 +80,7 @@ public class CMAN
 		{
 			try 
 			{
-				delete_recursivly(execdir + "/Data/CMAN-Archive");
+				util.delete_recursivly(execdir + "/Data/CMAN-Archive");
 			} catch (IOException e) {e.printStackTrace();}
 		}
 		new File(execdir + "/Data").mkdir();

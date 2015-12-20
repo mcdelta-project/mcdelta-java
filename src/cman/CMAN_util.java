@@ -1,17 +1,27 @@
 package cman;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Scanner;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
+import org.codehaus.plexus.archiver.zip.ZipEntry;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -38,6 +48,96 @@ public class CMAN_util
 		versionsfolder = vf;
 		execdir = ed;
 	}
+	
+	public void delete_recursivly(String dir) throws IOException
+	{
+		Path directory = Paths.get(dir);
+		   Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+			   @Override
+			   public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				   Files.delete(file);
+				   return FileVisitResult.CONTINUE;
+			   }
+
+			   @Override
+			   public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				   Files.delete(dir);
+				   return FileVisitResult.CONTINUE;
+			   }
+
+		   });
+	}
+	
+	 public void zipDir(String zipFileName, String dir) throws Exception 
+	 {
+		 File dirObj = new File(dir);
+		 ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
+		 addDir(dirObj, out);
+		 out.close();
+	 }
+
+	 static void addDir(File dirObj, ZipOutputStream out) throws IOException 
+	 {
+		 File[] files = dirObj.listFiles();
+		 byte[] tmpBuf = new byte[1024];
+
+		 for (int i = 0; i < files.length; i++) 
+		 {
+			 if (files[i].isDirectory()) 
+			 {
+				 addDir(files[i], out);
+				 continue;
+			 }
+			 FileInputStream in = new FileInputStream(files[i].getAbsolutePath());
+			 out.putNextEntry(new ZipEntry(files[i].getAbsolutePath()));
+			 int len;
+			 while ((len = in.read(tmpBuf)) > 0) 
+			 {
+				 out.write(tmpBuf, 0, len);
+			 }
+			 out.closeEntry();
+			 in.close();
+		 }
+	 }
+	
+    public void unzip(String zipFilePath, String destDirectory) throws IOException {
+        File destDir = new File(destDirectory);
+        if (!destDir.exists()) {
+            destDir.mkdir();
+        }
+        ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
+        java.util.zip.ZipEntry entry = zipIn.getNextEntry();
+        // iterates over entries in the zip file
+        while (entry != null) {
+            String filePath = destDirectory + File.separator + entry.getName();
+            if (!entry.isDirectory()) {
+                // if the entry is a file, extracts it
+                extractFile(zipIn, filePath);
+            } else {
+                // if the entry is a directory, make the directory
+                File dir = new File(filePath);
+                dir.mkdir();
+            }
+            zipIn.closeEntry();
+            entry = zipIn.getNextEntry();
+        }
+        zipIn.close();
+    }
+    /**
+     * Extracts a zip entry (file entry)
+     * @param zipIn
+     * @param filePath
+     * @throws IOException
+     */
+    private void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
+        byte[] bytesIn = new byte[4096];
+        int read = 0;
+        while ((read = zipIn.read(bytesIn)) != -1) {
+            bos.write(bytesIn, 0, read);
+        }
+        bos.close();
+    }
 	
 	/**
 	Reads and creates configuration file. Returns a String[] with two elements, modfolder and versionfolder.
@@ -295,7 +395,7 @@ public class CMAN_util
 	/**
 	Merges two directories.
 	*/
-	public static void mergedirs(File dir1, File dir2)
+	public void mergedirs(File dir1, File dir2)
 	{
 		String targetDirPath = dir1.getAbsolutePath();
 		File[] files = dir2.listFiles();

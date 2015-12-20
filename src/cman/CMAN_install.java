@@ -12,8 +12,11 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import org.codehaus.plexus.util.FileUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -149,10 +152,145 @@ public class CMAN_install
 		if(modtype.getAsString().equals("Basemod"))
 		{
 			System.out.println("Basemod install not currently supported in Java version.");
+			String url = json_data.get("Link").getAsString();
+			String version = json_data.get("Version").getAsString();
+			String mcversions = json_data.get("MCVersion").getAsString();
+			System.out.println(modname + " is at version " + version);
+			String file_name = modname + "-" + version + "CMANtemp.zip";
+			URL link;
+			System.out.println("Downloading " + url + " as " + file_name);
+			try 
+			{
+				link = new URL(url);
+				ReadableByteChannel rbc = Channels.newChannel(link.openStream());
+				if(!new File(execdir + "/Data/temp").exists())
+				{
+					new File(execdir + "/Data/temp").mkdirs();
+				}
+				FileOutputStream fos = new FileOutputStream(execdir + "/Data/temp/" + file_name);
+				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+				fos.close();
+				System.out.println("Done");
+			}
+			catch (MalformedURLException e) 
+			{
+				System.out.println("Something is wrong with the url, Please update the CMAN Archive");
+				e.printStackTrace();
+			}
+			catch (FileNotFoundException e) 
+			{
+				System.out.println("Could not find the file, Please update the CMAN Archive");
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+			new File(execdir + "/Data/temp/" + file_name.substring(0, file_name.length() - 4)).mkdir();
+			try 
+			{
+				util.unzip(execdir + "/Data/temp/" + file_name, execdir + "/Data/temp/" + file_name.substring(0, file_name.length() - 4));
+			} 
+			catch (IOException e) 
+			{
+				System.out.println("Couldn't create file.");
+				e.printStackTrace();
+				return;
+			}
+			String vname;
+			String vpath;
+			System.out.print("Enter name (as displayed in launcher) of minecraft instance to install into (compatible versions: "+mcversions+"): ");
+			vname = CMAN.input.nextLine();
+			vpath = versionsfolder + vname;
+			while(!new File(vpath).exists())
+			{
+				System.out.print("Enter name (as displayed in launcher) of minecraft instance to install into (compatible versions: "+mcversions+"): ");
+				vname = CMAN.input.nextLine();
+				vpath = versionsfolder + vname;
+			}
+			String jarname = vname + ".jar";
+			String jarpath = vpath + jarname;
+			String foldername = modname + "-" + version;
+			System.out.print("Enter install folder name or leave blank for default (default: "+foldername+"): ");
+			String foldernamefinal = CMAN.input.nextLine();
+			if(foldernamefinal.equals(""))
+			{
+				foldernamefinal = foldername;
+			}
+			String newjarname = foldernamefinal + ".jar";
+			System.out.println("Installing on version "+vname+" as "+foldernamefinal+".");
+			if(new File(versionsfolder + foldernamefinal).exists())
+			{
+				System.out.print("The folder "+foldernamefinal+" already exists. Type OK to overwrite, or anything else to choose a new name: ");
+				if(CMAN.input.nextLine().equals("OK"))
+				{
+					try 
+					{
+						util.delete_recursivly(versionsfolder + foldernamefinal);
+					} 
+					catch (IOException e) 
+					{
+						System.out.println("Couldn't delete the file");
+						return;
+					}
+				}
+				else
+				{
+					System.out.print("Enter new install folder name (current name: "+foldernamefinal+"): ");
+					foldernamefinal = CMAN.input.nextLine();
+				}
+				String folderpath = versionsfolder + foldernamefinal;
+				try 
+				{
+					FileUtils.copyDirectoryStructure(new File(vpath), new File(folderpath));
+				} 
+				catch (IOException e) 
+				{
+					System.out.println("Couldn't copy to " + folderpath);
+					return;
+				}
+				util.fix_names(folderpath, vname, foldernamefinal);
+				try 
+				{
+					util.unzip(versionsfolder + foldernamefinal + newjarname, execdir + "Data/temp/" + file_name + "/CMANtemp");
+				} 
+				catch (IOException e) 
+				{
+					System.out.println("Couldn't unzip");
+					return;
+				}
+				util.mergedirs(new File(execdir + "Data/temp/" + modname), new File(execdir + "Data/temp/" + file_name + "/CMANtemp"));
+				try 
+				{
+					util.delete_recursivly(execdir + "/Data/temp/" + file_name + "/CMANtemp" + "/META-INF");
+				} 
+				catch (IOException e) 
+				{
+					System.out.println("Couldn't delete META-INF");
+					return;
+				}
+				System.out.println("Making jar (this might take a while).");
+				try 
+				{
+					util.zipDir(execdir + "/Data/temp/" + foldername + ".zip", execdir + "/Data/temp/" + file_name + "/CMANtemp");
+				} 
+				catch (Exception e)
+				{
+					System.out.println("Couldn't make the zip.");
+					return;
+				}
+				try 
+				{
+					Files.move(Paths.get(execdir + "/Data/temp/" + foldername + ".zip"), Paths.get(folderpath + "/" + ".jar"));
+				}
+				catch (IOException e) 
+				{
+					System.out.println("Couldn't move file.");
+				}
+				System.out.println("Done.");
+			}
 		}
 		else if(modtype.getAsString().equals("Forge"))
 		{
-			System.out.println("forge");
 			String url = json_data.get("Link").getAsString();
 			String version = json_data.get("Version").getAsString();
 			System.out.println(modname + " is at version " + version);
