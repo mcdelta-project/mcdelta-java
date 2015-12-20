@@ -33,7 +33,7 @@ import com.google.gson.JsonObject;
 
 public class CMAN 
 {
-	String version = "1.0.0";
+	String version = "1.1.0";
 	
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
@@ -44,7 +44,7 @@ public class CMAN
 	CMAN_remove remove = new CMAN_remove();
 	CMAN_upgrade upgrade = new CMAN_upgrade();
 	CMAN_importexport importexport = new CMAN_importexport();
-	static Inputs input = new Inputs("1.0.0");
+	static Inputs input = new Inputs("1.1.0");
 	
 
 	
