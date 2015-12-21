@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Scanner;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 

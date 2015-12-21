@@ -1,7 +1,6 @@
 package cman;
 
 import java.io.File;
-import java.util.Scanner;
 
 public class CMAN_remove 
 {

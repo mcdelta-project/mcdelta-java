@@ -1,9 +1,7 @@
 package cman;
 
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

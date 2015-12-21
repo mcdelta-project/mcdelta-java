@@ -5,11 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
