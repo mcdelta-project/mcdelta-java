@@ -1,5 +1,5 @@
 [![Stories in Ready](https://badge.waffle.io/Comprehensive-Minecraft-Archive-Network/CMAN.png?label=ready&title=Ready)](https://waffle.io/Comprehensive-Minecraft-Archive-Network/CMAN)
-[![Build Status](https://travis-ci.org/Comprehensive-Minecraft-Archive-Network/CMAN-Java.svg?branch=master)](https://travis-ci.org/Comprehensive-Minecraft-Archive-Network/CMAN-Java)
+[![Build Status](https://travis-ci.org/Comprehensive-Minecraft-Archive-Network/CMAN-Java.svg?branch=stable)](https://travis-ci.org/Comprehensive-Minecraft-Archive-Network/CMAN-Java)
 # CMAN
 Comprehensive Minecraft Archive Network
 
