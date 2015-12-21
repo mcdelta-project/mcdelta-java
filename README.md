@@ -8,7 +8,7 @@ Have a mod on the CMAN? Add this to your forum page so that everyone knows! ![Ba
 
 Proudly supporting [#StopModReposts](http://www.stopmodreposts.org)!
 
-
+[![Build Status](https://travis-ci.org/Comprehensive-Minecraft-Archive-Network/CMAN-Java.svg?branch=master)](https://travis-ci.org/Comprehensive-Minecraft-Archive-Network/CMAN-Java)
 
 #Java Notes
 To get a copy of the nightly build, contact us.
