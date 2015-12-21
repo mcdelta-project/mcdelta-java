@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -93,6 +94,7 @@ public class Visual extends JFrame
 		int desktopheight = gd.getDisplayMode().getHeight();
 		this.setLocation((desktopwidth/2)-(this.getWidth()/2), (desktopheight/2)-(this.getHeight()/2));
 		this.setTitle("CMAN-Java " + version);
+		this.setIconImage(new ImageIcon("src/cman/cmanicon.png").getImage());
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
