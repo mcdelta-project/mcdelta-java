@@ -9,7 +9,7 @@ Have a mod on the CMAN? Add this to your forum page so that everyone knows! ![Ba
 
 Proudly supporting [#StopModReposts](http://www.stopmodreposts.org)
 
-If you want to create a pull request, please do it at the [nightly](Comprehensive-Minecraft-Archive-Network/CMAN-Java/tree/nightly) branch and do not create pull requests on stable as they will get denied without any consideration.
+If you want to create a pull request, please do it at the [nightly](/Comprehensive-Minecraft-Archive-Network/CMAN-Java/tree/nightly) branch and do not create pull requests on stable as they will get denied without any consideration.
 
 #Java Notes
 To get a copy of the nightly build, contact us.
