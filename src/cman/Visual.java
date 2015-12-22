@@ -88,17 +88,14 @@ public class Visual extends JFrame
 		this.add(text);
 		this.area.setEditable(false);
 		text.addActionListener(new AbstractAction() {
-
-			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
-	            synchronized (holder) {
-	                holder.add(text.getText());
-	                holder.notify();
-	            }
-	            
+				synchronized (holder)
+				{
+					holder.add(text.getText());
+					holder.notify();
+				}
 			}
-			
 		});	
 		this.pack();
 		this.setResizable(false);
