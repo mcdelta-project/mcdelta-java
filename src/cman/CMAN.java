@@ -67,6 +67,10 @@ public class CMAN
 			{
 				System.out.println("WARNING! YOU ARE USING OLD VERSION " + version + "! NEWEST VERSION IS " + latestversion + "!");
 			}
+			else
+			{
+				System.out.println("CMAN-Java is up to date.");
+			}
 			s.close();
 		} 
 		catch (MalformedURLException e) 
@@ -199,7 +203,6 @@ public class CMAN
 	{
 		CMAN cman = new CMAN();
 		String path = CMAN.class.getProtectionDomain().getCodeSource().getLocation().toString();
-		System.out.println(path);
 		String decodedPath = System.getProperty("user.dir");
 		try 
 		{

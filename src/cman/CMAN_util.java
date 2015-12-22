@@ -170,7 +170,6 @@ public class CMAN_util
 		String path = CMAN_util.class.getProtectionDomain().getCodeSource().getLocation().toString();
 		Path currentRelativePath = Paths.get("");
 		String s = currentRelativePath.toAbsolutePath().toString();
-		System.out.println("Current relative path is: " + s);
 		String decodedPath = System.getProperty("user.dir");
 		try 
 		{
