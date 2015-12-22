@@ -39,8 +39,15 @@ import com.google.gson.JsonObject;
  */
 public class CMAN 
 {
+	boolean isNightly = true; 
 	String version = "1.1.0";
-	
+	public String getVersion(int devBuild) { //Set devBuild to null if stable and not nightly
+		if (isNightly) {
+			return version + "-nightly-b" + devBuild;
+		} else {
+			return version;
+		}
+	}
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
@@ -63,9 +70,9 @@ public class CMAN
 			//url = new URL("https://raw.githubusercontent.com/randomtestfive/CMAN-Java/master/version.txt");
 			Scanner s = new Scanner(url.openStream(), "UTF-8");
 			String latestversion = s.next();
-			if(!latestversion.equals(version))
+			if(!latestversion.equals(getVersion(001))
 			{
-				System.out.println("WARNING! YOU ARE USING OLD VERSION " + version + "! NEWEST VERSION IS " + latestversion + "!");
+				System.out.println("WARNING! YOU ARE USING OLD VERSION " + getVersion(001) + "! NEWEST VERSION IS " + latestversion + "!");
 			}
 			else
 			{
