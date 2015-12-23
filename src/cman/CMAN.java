@@ -478,6 +478,10 @@ public class CMAN
 			}
 			else if(command.split(" ")[0].equals("exit"))
 			{
+				if(CMAN.input.v != null)
+				{
+					CMAN.input.v.dispose();
+				}
 				return;
 			}
 			else if(command.split(" ")[0].equals("")){}
