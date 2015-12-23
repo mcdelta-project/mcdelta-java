@@ -66,7 +66,14 @@ public class CMAN
 		URL url;
 		try 
 		{
-			url = new URL("http://raw.githubusercontent.com/Comprehensive-Minecraft-Archive-Network/CMAN-Java/master/version.txt");
+			if(isNightly)
+			{
+				url = new URL("https://raw.githubusercontent.com/Comprehensive-Minecraft-Archive-Network/CMAN-Java/nightly/version.txt");
+			}
+			else
+			{
+				url = new URL("https://raw.githubusercontent.com/Comprehensive-Minecraft-Archive-Network/CMAN-Java/stable/version.txt");
+			}
 			//url = new URL("https://raw.githubusercontent.com/randomtestfive/CMAN-Java/master/version.txt");
 			Scanner s = new Scanner(url.openStream(), "UTF-8");
 			String latestversion = s.next();
