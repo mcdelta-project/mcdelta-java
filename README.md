@@ -11,5 +11,5 @@ Proudly supporting [#StopModReposts](http://www.stopmodreposts.org)
 
 If you want to create a pull request, please do it at the [nightly](https://github.com/Comprehensive-Minecraft-Archive-Network/CMAN-Java/tree/nightly) branch and do not create pull requests on stable as they will get denied without any consideration.
 
-#Java Notes
-To get a copy of the nightly build, contact us.
+#Minimum Requirements
+Java 7 or higher
