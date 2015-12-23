@@ -70,7 +70,7 @@ public class CMAN
 			//url = new URL("https://raw.githubusercontent.com/randomtestfive/CMAN-Java/master/version.txt");
 			Scanner s = new Scanner(url.openStream(), "UTF-8");
 			String latestversion = s.next();
-			if(!latestversion.equals(getVersion(001))
+			if(!latestversion.equals(getVersion(001)))
 			{
 				System.out.println("WARNING! YOU ARE USING OLD VERSION " + getVersion(001) + "! NEWEST VERSION IS " + latestversion + "!");
 			}
