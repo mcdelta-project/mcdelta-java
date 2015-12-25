@@ -43,7 +43,7 @@ public class Visual extends JFrame
 {
 	final List<String> holder = new LinkedList<String>();
 	JTextField text = new JTextField("");
-	JTextArea area = new JTextArea(20, 50);
+	JTextArea area = new JTextArea(25, 55);
 	JScrollPane scroll = new JScrollPane(area);
 	private boolean enterkey = false;
 	private String out = "";
