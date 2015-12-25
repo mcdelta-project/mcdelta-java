@@ -104,7 +104,7 @@ public class Visual extends JFrame
 		int desktopheight = gd.getDisplayMode().getHeight();
 		this.setLocation((desktopwidth/2)-(this.getWidth()/2), (desktopheight/2)-(this.getHeight()/2));
 		this.setTitle("CMAN-Java " + version);
-		this.setIconImage(new ImageIcon("src/cman/cmanicon.png").getImage());
+		this.setIconImage(new ImageIcon(this.getClass().getResource("/cman/cmanicon.png")).getImage());
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
