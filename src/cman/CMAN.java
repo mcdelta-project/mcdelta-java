@@ -39,11 +39,13 @@ import com.google.gson.JsonObject;
  */
 public class CMAN 
 {
+	int nightlyVersion = 002;
 	boolean isNightly = true; 
 	String version = "1.1.0";
-	public String getVersion(int devBuild) { //Set devBuild to null if stable and not nightly
+	public String getVersion() { //Set devBuild to null if stable and not nightly
+		int devBuild = nightlyVersion;
 		if (isNightly) {
-			return version + "-nightly-b" + devBuild;
+			return version + "-nightly-b" + String.format("%03d", devBuild);
 		} else {
 			return version;
 		}
@@ -57,7 +59,7 @@ public class CMAN
 	CMAN_remove remove = new CMAN_remove();
 	CMAN_upgrade upgrade = new CMAN_upgrade();
 	CMAN_importexport importexport = new CMAN_importexport();
-	static Inputs input = new Inputs("1.1.0");
+	static Inputs input; 
 	
 
 	
@@ -77,9 +79,9 @@ public class CMAN
 			//url = new URL("https://raw.githubusercontent.com/randomtestfive/CMAN-Java/master/version.txt");
 			Scanner s = new Scanner(url.openStream(), "UTF-8");
 			String latestversion = s.next();
-			if(!latestversion.equals(getVersion(001)))
+			if(!latestversion.equals(getVersion()))
 			{
-				System.out.println("WARNING! YOU ARE USING OLD VERSION " + getVersion(001) + "! NEWEST VERSION IS " + latestversion + "!");
+				System.out.println("WARNING! YOU ARE USING OLD VERSION " + getVersion() + "! NEWEST VERSION IS " + latestversion + "!");
 			}
 			else
 			{
@@ -216,6 +218,7 @@ public class CMAN
 	public static void main(String[] args) throws IOException 
 	{
 		CMAN cman = new CMAN();
+		input = new Inputs(cman.getVersion());
 		String path = CMAN.class.getProtectionDomain().getCodeSource().getLocation().toString();
 		String decodedPath = System.getProperty("user.dir");
 		try 
@@ -237,7 +240,7 @@ public class CMAN
 		cman.upgrade.init_config_upgrade(places[0], places[1], cman.execdir);
 		cman.importexport.init_config_importexport(places[0], places[1], cman.execdir);
 		cman.update_archive();
-		System.out.println("CMAN-Java v" + cman.version);
+		System.out.println("CMAN-Java v" + cman.getVersion());
 		cman.check_for_updates();
 		if(cman.upgrade.get_upgrades().length != 0)
 		{
@@ -471,6 +474,10 @@ public class CMAN
 			else if(command.split(" ")[0].equals("list"))
 			{
 				cman.util.listmods();
+			}
+			else if(command.split(" ")[0].equals("info"))
+			{
+				cman.get_info(command.split(" ")[1]);
 			}
 			else if(command.split(" ")[0].equals("help") || command.split(" ")[0].equals("?"))
 			{
