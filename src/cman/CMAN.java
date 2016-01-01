@@ -60,7 +60,7 @@ public class CMAN
 	CMAN_upgrade upgrade = new CMAN_upgrade();
 	CMAN_importexport importexport = new CMAN_importexport();
 	static Inputs input; 
-	
+	static String tab = "        ";
 
 	
 	public void check_for_updates()
@@ -184,35 +184,35 @@ public class CMAN
 				incomp = incomp.substring(0, incomp.length() - 2);
 			}
 			System.out.println(json_data.get("Name").getAsString() + ":");
-			System.out.println(" Version: " + json_data.get("Version").getAsString() + " (" + stable + ")");
-			System.out.println(" Author(s): " + json_data.get("Author").getAsString());
-			System.out.println(" Description: " + json_data.get("Desc").getAsString());
-			System.out.println(" Requirements: " + reqs);
-			System.out.println(" Known Incompatibilities: " + incomp);
-			System.out.println(" Download Link: " + json_data.get("Link").getAsString());
-			System.out.println(" License: " + json_data.get("License").getAsString());
+			System.out.println(tab + "Version: " + json_data.get("Version").getAsString() + " (" + stable + ")");
+			System.out.println(tab + "Author(s): " + json_data.get("Author").getAsString());
+			System.out.println(tab + "Description: " + json_data.get("Desc").getAsString());
+			System.out.println(tab + "Requirements: " + reqs);
+			System.out.println(tab + "Known Incompatibilities: " + incomp);
+			System.out.println(tab + "Download Link: " + json_data.get("Link").getAsString());
+			System.out.println(tab + "License: " + json_data.get("License").getAsString());
 		}
 	}
 	
 	public void print_help()
 	{
 		System.out.println("Commands:");
-		System.out.println(" install 'mod': install the mod 'mod'");
-		System.out.println(" installm: install multiple mods");
-		System.out.println(" info 'mod': get info for the mod 'mod'");
-		System.out.println(" remove 'mod': remove the mod 'mod'");
-		System.out.println(" removem: remove multiple mods");
-		System.out.println(" upgrade 'mod': upgrade the mod 'mod'");
-		System.out.println(" upgradem: upgrade multiple mods");
-		System.out.println(" upgradeall: upgrade all outdated mods");
-		System.out.println(" upgrades: list available mod upgrades");
-		System.out.println(" update: update the CMAN archive");
-		System.out.println(" help: display this help message");
-		System.out.println(" version: display the CMAN version number");
-		System.out.println(" list: list installed mods");
-		System.out.println(" export 'name': export a modlist with the name 'name' , which can be imported later");
-		System.out.println(" import 'pathtomodlist': import the modlist 'pathtomodlist'");
-		System.out.println(" exit: exit CMAN");
+		System.out.println(tab + "install 'mod': install the mod 'mod'");
+		System.out.println(tab + "installm: install multiple mods");
+		System.out.println(tab + "info 'mod': get info for the mod 'mod'");
+		System.out.println(tab + "remove 'mod': remove the mod 'mod'");
+		System.out.println(tab + "removem: remove multiple mods");
+		System.out.println(tab + "upgrade 'mod': upgrade the mod 'mod'");
+		System.out.println(tab + "upgradem: upgrade multiple mods");
+		System.out.println(tab + "upgradeall: upgrade all outdated mods");
+		System.out.println(tab + "upgrades: list available mod upgrades");
+		System.out.println(tab + "update: update the CMAN archive");
+		System.out.println(tab + "help: display this help message");
+		System.out.println(tab + "version: display the CMAN version number");
+		System.out.println(tab + "list: list installed mods");
+		System.out.println(tab + "export 'name': export a modlist with the name 'name' , which can be imported later");
+		System.out.println(tab + "import 'pathtomodlist': import the modlist 'pathtomodlist'");
+		System.out.println(tab + "exit: exit CMAN");
 	}
 	
 	public static void main(String[] args) throws IOException 
@@ -247,7 +247,7 @@ public class CMAN
 			System.out.println("The following upgrades are availible:");
 			for(JsonObject[] upgrade : cman.upgrade.get_upgrades())
 			{	
-				System.out.println(" " + upgrade[0].get("Name").getAsString() + "(current version: " + upgrade[1].get("Version").getAsString() + ", you have: " + upgrade[0].get("Version").getAsString() + ")");
+				System.out.println(tab + upgrade[0].get("Name").getAsString() + "(current version: " + upgrade[1].get("Version").getAsString() + ", you have: " + upgrade[0].get("Version").getAsString() + ")");
 			}
 		}
 		int i = 0;
