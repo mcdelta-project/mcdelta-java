@@ -405,9 +405,16 @@ public class CMAN_util
 	public void listmods()
 	{
 		System.out.println("Installed mods:");
-		for(int i = 0; i < get_installed_jsons().length; i++)
+		if(get_installed_jsons() != null)
 		{
-			System.out.println(get_installed_jsons()[i].get("Name").getAsString());
+			for(int i = 0; i < get_installed_jsons().length; i++)
+			{
+				System.out.println(get_installed_jsons()[i].get("Name").getAsString());
+			}
+		}
+		else
+		{
+			System.out.println("None");
 		}
 	}
 	
