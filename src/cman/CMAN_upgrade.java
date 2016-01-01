@@ -102,7 +102,7 @@ public class CMAN_upgrade
 				if(mod != null)
 				{
 					JsonObject json_data = util.get_json(mod.get("Name").getAsString());
-					if(json_data != null && json_data.get("Version").getAsString() != mod.get("Version").getAsString())
+					if(json_data != null && !json_data.get("Version").getAsString().equals(mod.get("Version").getAsString()))
 					{
 						JsonObject[] temp = {mod, json_data};
 						updates.add(temp);
