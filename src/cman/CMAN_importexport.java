@@ -93,8 +93,12 @@ public class CMAN_importexport
 	       	FileWriter fw;
 			try 
 			{
+				if(!new File(execdir + "/LocalData/Modlists").exists())
+				{
+					new File(execdir + "/LocalData/Modlists").mkdir();
+				}
 				fw = new FileWriter(execdir + "/LocalData/Modlists/" + filename + ".modlist", false);
-				fw.write(j.getAsString());
+				fw.write(j.toString());
 				fw.close();
 			} 
 			catch (IOException e) 
