@@ -147,7 +147,7 @@ public class CMAN_importexport
 			{
 				System.out.println("Installing " + mod + "...");
 				install.install_mod(mod);
-				System.out.println(mod + "installed.");
+				System.out.println(mod + " installed.");
 			}
 		} 
 		catch (JsonIOException e) 
