@@ -409,12 +409,12 @@ public class CMAN_util
 		{
 			for(int i = 0; i < get_installed_jsons().length; i++)
 			{
-				System.out.println(get_installed_jsons()[i].get("Name").getAsString());
+				System.out.println("        " + get_installed_jsons()[i].get("Name").getAsString());
 			}
 		}
 		else
 		{
-			System.out.println("None");
+			System.out.println("        " + "None");
 		}
 	}
 	
