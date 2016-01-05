@@ -26,6 +26,7 @@ import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -104,7 +105,14 @@ public class Visual extends JFrame
 		int desktopheight = gd.getDisplayMode().getHeight();
 		this.setLocation((desktopwidth/2)-(this.getWidth()/2), (desktopheight/2)-(this.getHeight()/2));
 		this.setTitle("CMAN-Java " + version);
-		this.setIconImage(new ImageIcon(this.getClass().getResource("/cman/cmanicon.png")).getImage());
+		try 
+		{
+			this.setIconImage(ImageIO.read(getClass().getResource("/cman/cmanicon.png")));
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
