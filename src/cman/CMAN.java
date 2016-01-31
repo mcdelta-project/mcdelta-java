@@ -239,6 +239,22 @@ public class CMAN
 		cman.remove.init_config_remove(places[0], places[1], cman.execdir);
 		cman.upgrade.init_config_upgrade(places[0], places[1], cman.execdir);
 		cman.importexport.init_config_importexport(places[0], places[1], cman.execdir);
+		if(CMAN.input.v != null)
+		CMAN.input.v.addWindowListener(new java.awt.event.WindowAdapter() 
+		{
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) 
+		    {
+		    	try 
+		    	{
+					cman.util.delete_recursivly(cman.execdir + "/LocalData/tmp");
+				} 
+		    	catch (IOException e) 
+		    	{
+					e.printStackTrace();
+				}
+		    }
+		});
 		cman.update_archive();
 		System.out.println("CMAN-Java v" + cman.getVersion());
 		cman.check_for_updates();
@@ -488,6 +504,14 @@ public class CMAN
 				if(CMAN.input.v != null)
 				{
 					CMAN.input.v.dispose();
+				}
+		    	try 
+		    	{
+					cman.util.delete_recursivly(cman.execdir + "/LocalData/tmp");
+				} 
+		    	catch (IOException e) 
+		    	{
+					e.printStackTrace();
 				}
 				return;
 			}

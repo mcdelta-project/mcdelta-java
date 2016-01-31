@@ -71,6 +71,8 @@ public class Visual extends JFrame
 	
 	public Visual(String version)
 	{
+		area.setLineWrap(true);
+		area.setWrapStyleWord(true);
 		System.setOut(new PrintStream(new OutputStream() {
 			
 			@Override
