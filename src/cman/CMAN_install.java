@@ -17,6 +17,7 @@
 
 package cman;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -376,10 +377,25 @@ public class CMAN_install
 			{
 				link = new URL(url);
 				ReadableByteChannel rbc = Channels.newChannel(link.openStream());
-				FileOutputStream fos = new FileOutputStream(modfolder + "/" + file_name);
+				String tempdir = execdir + "/LocalData/tmp";
+				if(!new File(tempdir).exists())
+				{
+					new File(tempdir).mkdir();
+				}
+				FileOutputStream fos = new FileOutputStream(tempdir + "/" + file_name);
 				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 				fos.close();
-				System.out.println("Done. Please run the installer.");
+				System.out.println("Done. Please run the installer at:" + tempdir.replace("\\", "/") + "/" + file_name);
+				Desktop d;
+				try
+				{
+					d = Desktop.getDesktop();
+					d.open(new File(tempdir));
+				}
+				catch (IOException e)
+				{
+					System.out.println("Couldn't open a file manager.");
+				}
 			} 
 			catch (MalformedURLException e) 
 			{
