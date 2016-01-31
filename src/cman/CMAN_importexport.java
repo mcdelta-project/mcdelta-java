@@ -73,12 +73,11 @@ public class CMAN_importexport
 		{
 			File[] jsons = new File(execdir + "/LocalData/ModsDownloaded").listFiles();
 			String[] names = new String[jsons.length];
-			JsonObject[] json = new JsonObject[jsons.length];
 			int dirlength = new String(execdir + "/LocalData/ModsDownloaded/").length();
 			int i = 0;
 			for(File f : jsons)
 			{
-				names[i] = jsons[i].getAbsolutePath().substring(dirlength, jsons[i].getAbsolutePath().length() - 10);
+				names[i] = f.getAbsolutePath().substring(dirlength, jsons[i].getAbsolutePath().length() - 10);
 				i++;
 			}
 			

@@ -223,8 +223,6 @@ public class CMAN_install
 				vname = CMAN.input.nextLine();
 				vpath = versionsfolder + vname;
 			}
-			String jarname = vname + ".jar";
-			String jarpath = vpath + jarname;
 			String foldername = modname + "-" + version;
 			System.out.print("Enter install folder name or leave blank for default (default: "+foldername+"): ");
 			String foldernamefinal = CMAN.input.nextLine();

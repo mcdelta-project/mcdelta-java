@@ -46,7 +46,6 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
 
 /**
  *
@@ -164,12 +163,9 @@ public class CMAN_util
 	*/
 	public String[] read_config()
 	{
-		String newLine = System.getProperty("line.separator");
 		String mFolder = "@ERROR@";
 		String vFolder = "@ERROR@";
 		String path = CMAN_util.class.getProtectionDomain().getCodeSource().getLocation().toString();
-		Path currentRelativePath = Paths.get("");
-		String s = currentRelativePath.toAbsolutePath().toString();
 		String decodedPath = System.getProperty("user.dir");
 		try 
 		{
@@ -190,7 +186,6 @@ public class CMAN_util
 		Gson gson = new Gson();
 		if(jsonfile.exists())
 		{
-			JsonReader reader;
 			try 
 			{
 	            JsonParser parser = new JsonParser();
@@ -385,7 +380,7 @@ public class CMAN_util
 			int i = 0;
 			for(File f : jsons)
 			{
-				names[i] = jsons[i].getAbsolutePath().substring(dirlength, jsons[i].getAbsolutePath().length() - 10);
+				names[i] = f.getAbsolutePath().substring(dirlength, jsons[i].getAbsolutePath().length() - 10);
 				i++;
 			}
 			i = 0;

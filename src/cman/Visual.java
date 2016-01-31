@@ -29,7 +29,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -46,7 +45,6 @@ public class Visual extends JFrame
 	JTextField text = new JTextField("");
 	JTextArea area = new JTextArea(25, 55);
 	JScrollPane scroll = new JScrollPane(area);
-	private boolean enterkey = false;
 	private String out = "";
 	
 	public String getLine()

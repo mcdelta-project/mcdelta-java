@@ -20,10 +20,8 @@ package cman;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Scanner;
@@ -219,16 +217,6 @@ public class CMAN
 	{
 		CMAN cman = new CMAN();
 		input = new Inputs(cman.getVersion());
-		String path = CMAN.class.getProtectionDomain().getCodeSource().getLocation().toString();
-		String decodedPath = System.getProperty("user.dir");
-		try 
-		{
-			decodedPath = URLDecoder.decode(path, "UTF-8");
-		} 
-		catch (UnsupportedEncodingException e) 
-		{
-			e.printStackTrace();
-		}
 		cman.execdir = new java.io.File( "." ).getCanonicalPath(); //decodedPath.substring(1, decodedPath.length() - 1);
 		//System.out.println(decodedPath);
 		//v.text.setText(cman.execdir);
