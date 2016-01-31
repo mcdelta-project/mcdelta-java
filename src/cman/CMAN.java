@@ -100,6 +100,11 @@ public class CMAN
 	
 	public void update_archive()
 	{
+		this.update_archive(false);
+	}
+	
+	public void update_archive(boolean loud)
+	{
 		if(new File(execdir + "/Data/CMAN-Archive").exists())
 		{
 			try 
@@ -113,12 +118,14 @@ public class CMAN
 		String file_name = "CMAN.tar.gz";
 		try 
 		{
+			if(loud)
 			System.out.println("Downloading Archive");
 			url = new URL("https://github.com/Comprehensive-Minecraft-Archive-Network/CMAN-Archive/archive/master.zip");
 			ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 			FileOutputStream fos = new FileOutputStream(execdir + "/Data/" + file_name);
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 			fos.close();
+			if(loud)
 			System.out.println("Done");
 		}
 		catch (MalformedURLException e) 
@@ -132,6 +139,7 @@ public class CMAN
 		File sourceFile = new File(execdir + "/Data/" + file_name);
 		File destDir = new File(execdir + "/Data");
 		File endDir = new File(execdir + "/Data/CMAN-Archive-master");
+		if(loud)
 		System.out.println("Extracting " + sourceFile.getName() + " to " + endDir.getName());
 		UnArchiver ua = new TarGZipUnArchiver(sourceFile);
 		ua.setSourceFile(sourceFile);
@@ -139,10 +147,14 @@ public class CMAN
 		ua.setDestDirectory(destDir);
 		ua.extract("CMAN-Archive-master/", destDir);
 		endDir.renameTo(new File(execdir + "/Data/CMAN-Archive"));
+		if(loud)
 		System.out.println("Renamed CMAN-Archive-master to CMAN-Archive");
 		sourceFile.delete();
-		System.out.println("Deleting CMAN.tar.gz");
-		System.out.println("Done");
+		if(loud)
+		{
+			System.out.println("Deleting CMAN.tar.gz");
+			System.out.println("Done");
+		}
 	}
 	
 	public void get_info(String modname)
@@ -295,7 +307,7 @@ public class CMAN
 			String command = input.nextLine();
 			if(command.split(" ")[0].equals("update"))
 			{
-				cman.update_archive();
+				cman.update_archive(true);
 			}
 			else if(command.split(" ")[0].equals("upgrades"))
 			{
