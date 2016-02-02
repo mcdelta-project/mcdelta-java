@@ -70,21 +70,23 @@ public class CMAN_util
 	
 	public void delete_recursivly(String dir) throws IOException
 	{
-		Path directory = Paths.get(dir);
-		   Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
-			   @Override
-			   public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				   Files.delete(file);
-				   return FileVisitResult.CONTINUE;
-			   }
+		if(new File(dir).exists())
+		{
+			Path directory = Paths.get(dir);
+			Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					Files.delete(file);
+					return FileVisitResult.CONTINUE;
+				}
 
-			   @Override
-			   public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				   Files.delete(dir);
-				   return FileVisitResult.CONTINUE;
-			   }
-
-		   });
+				@Override
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					Files.delete(dir);
+					return FileVisitResult.CONTINUE;
+				}				
+			});
+		}
 	}
 	
 	 public void zipDir(String zipFileName, String dir) throws Exception 
