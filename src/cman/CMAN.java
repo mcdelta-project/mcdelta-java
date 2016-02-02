@@ -227,7 +227,7 @@ public class CMAN
 	
 	public static void main(String[] args) throws IOException 
 	{
-		CMAN cman = new CMAN();
+		final CMAN cman = new CMAN();
 		input = new Inputs(cman.getVersion());
 		cman.execdir = new java.io.File( "." ).getCanonicalPath(); //decodedPath.substring(1, decodedPath.length() - 1);
 		//System.out.println(decodedPath);
