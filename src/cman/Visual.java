@@ -21,9 +21,12 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,6 +51,8 @@ public class Visual extends JFrame
 	JTextArea area = new JTextArea(25, 55);
 	JScrollPane scroll = new JScrollPane(area);
 	private String out = "";
+	private ArrayList<String> old = new ArrayList<String>();
+	int pos;
 	
 	public String getLine()
 	{	    
@@ -65,6 +70,7 @@ public class Visual extends JFrame
 			}
         }
         out = holder.remove(0);
+		old.add(text.getText());
         this.text.setText("");
         System.out.println(out);
 		}
@@ -81,6 +87,7 @@ public class Visual extends JFrame
 			public void write(int b) throws IOException 
 			{
 				area.append(String.valueOf((char)b));
+				pos = old.size();
 				area.setCaretPosition(area.getDocument().getLength());
 			}
 		}));
@@ -100,6 +107,38 @@ public class Visual extends JFrame
 				}
 			}
 		});	
+		text.addKeyListener(new KeyListener()
+		{
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if(arg0.getKeyCode() == KeyEvent.VK_UP && pos != 0)
+				{
+					pos--;
+					text.setText(old.get(pos));
+				}
+				if(arg0.getKeyCode() == KeyEvent.VK_DOWN && pos < old.size())
+				{
+					pos++;
+					if(pos < old.size())
+					{
+						text.setText(old.get(pos));
+					}
+					else
+					{
+						text.setText("");
+					}
+				}
+				if(arg0.getKeyCode() != KeyEvent.VK_DOWN && arg0.getKeyCode() != KeyEvent.VK_UP)
+				{
+					pos = old.size();
+				}
+			}
+	
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			@Override
+			public void keyTyped(KeyEvent e) {}				
+		});
 		this.pack();
 		this.setResizable(false);
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
