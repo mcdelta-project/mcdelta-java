@@ -385,7 +385,7 @@ public class CMAN_install
 				FileOutputStream fos = new FileOutputStream(tempdir + "/" + file_name);
 				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 				fos.close();
-				System.out.println("Done. Please run the installer at:" + tempdir.replace("\\", "/") + "/" + file_name);
+				System.out.println("Done. Please run the installer at: " + tempdir.replace("\\", "/") + "/" + file_name);
 				Desktop d;
 				try
 				{
