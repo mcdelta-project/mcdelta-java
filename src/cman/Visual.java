@@ -19,6 +19,7 @@ package cman;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,6 +30,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -107,7 +109,9 @@ public class Visual extends JFrame
 		this.setTitle("CMAN-Java " + version);
 		try 
 		{
-			this.setIconImage(ImageIO.read(getClass().getResource("/cman/cmanicon.png")));
+			Image icon = ImageIO.read(getClass().getResource("/cman/cmanicon.png"));
+			new ImageIcon(icon);
+			this.setIconImage(icon);
 		} 
 		catch (IOException e) 
 		{
