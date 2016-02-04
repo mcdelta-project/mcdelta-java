@@ -389,8 +389,11 @@ public class CMAN_install
 				Desktop d;
 				try
 				{
-					d = Desktop.getDesktop();
-					d.open(new File(tempdir));
+					if(CMAN.input.v != null)
+					{
+						d = Desktop.getDesktop();
+						d.open(new File(tempdir));
+					}
 				}
 				catch (IOException e)
 				{
