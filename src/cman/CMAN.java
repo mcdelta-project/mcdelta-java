@@ -38,7 +38,7 @@ import com.google.gson.JsonObject;
 public class CMAN 
 {
 	int nightlyVersion = 004;
-	boolean isNightly = true; 
+	boolean isNightly = false; 
 	String version = "1.1.0";
 	public String getVersion() { //Set devBuild to null if stable and not nightly
 		int devBuild = nightlyVersion;
