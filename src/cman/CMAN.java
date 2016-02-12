@@ -1,40 +1,53 @@
+/*
+ * Copyright (C) 2015 CMAN Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package cman;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.zip.GZIPInputStream;
 
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 
 import com.google.gson.JsonObject;
 
+/**
+ *
+ * @author CMAN Team
+ */
 public class CMAN 
 {
+	int nightlyVersion = 004;
+	boolean isNightly = true; 
 	String version = "1.1.0";
-	
+	public String getVersion() { //Set devBuild to null if stable and not nightly
+		int devBuild = nightlyVersion;
+		if (isNightly) {
+			return version + "-nightly-b" + String.format("%03d", devBuild);
+		} else {
+			return version;
+		}
+	}
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
@@ -44,8 +57,8 @@ public class CMAN
 	CMAN_remove remove = new CMAN_remove();
 	CMAN_upgrade upgrade = new CMAN_upgrade();
 	CMAN_importexport importexport = new CMAN_importexport();
-	static Inputs input = new Inputs("1.1.0");
-	
+	static Inputs input; 
+	static String tab = "        ";
 
 	
 	public void check_for_updates()
@@ -53,13 +66,24 @@ public class CMAN
 		URL url;
 		try 
 		{
-			url = new URL("http://raw.githubusercontent.com/Comprehensive-Minecraft-Archive-Network/CMAN-Java/master/version.txt");
+			if(isNightly)
+			{
+				url = new URL("https://raw.githubusercontent.com/Comprehensive-Minecraft-Archive-Network/CMAN-Java/nightly/version.txt");
+			}
+			else
+			{
+				url = new URL("https://raw.githubusercontent.com/Comprehensive-Minecraft-Archive-Network/CMAN-Java/stable/version.txt");
+			}
 			//url = new URL("https://raw.githubusercontent.com/randomtestfive/CMAN-Java/master/version.txt");
 			Scanner s = new Scanner(url.openStream(), "UTF-8");
 			String latestversion = s.next();
-			if(!latestversion.equals(version))
+			if(!latestversion.equals(getVersion()))
 			{
-				System.out.println("WARNING! YOU ARE USING OLD VERSION " + version + "! NEWEST VERSION IS " + latestversion + "!");
+				System.out.println("WARNING! YOU ARE USING OLD VERSION " + getVersion() + "! NEWEST VERSION IS " + latestversion + "!");
+			}
+			else
+			{
+				System.out.println("CMAN-Java is up to date.");
 			}
 			s.close();
 		} 
@@ -76,6 +100,11 @@ public class CMAN
 	
 	public void update_archive()
 	{
+		this.update_archive(false);
+	}
+	
+	public void update_archive(boolean loud)
+	{
 		if(new File(execdir + "/Data/CMAN-Archive").exists())
 		{
 			try 
@@ -89,12 +118,14 @@ public class CMAN
 		String file_name = "CMAN.tar.gz";
 		try 
 		{
+			if(loud)
 			System.out.println("Downloading Archive");
 			url = new URL("https://github.com/Comprehensive-Minecraft-Archive-Network/CMAN-Archive/archive/master.zip");
 			ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 			FileOutputStream fos = new FileOutputStream(execdir + "/Data/" + file_name);
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 			fos.close();
+			if(loud)
 			System.out.println("Done");
 		}
 		catch (MalformedURLException e) 
@@ -108,6 +139,7 @@ public class CMAN
 		File sourceFile = new File(execdir + "/Data/" + file_name);
 		File destDir = new File(execdir + "/Data");
 		File endDir = new File(execdir + "/Data/CMAN-Archive-master");
+		if(loud)
 		System.out.println("Extracting " + sourceFile.getName() + " to " + endDir.getName());
 		UnArchiver ua = new TarGZipUnArchiver(sourceFile);
 		ua.setSourceFile(sourceFile);
@@ -115,10 +147,14 @@ public class CMAN
 		ua.setDestDirectory(destDir);
 		ua.extract("CMAN-Archive-master/", destDir);
 		endDir.renameTo(new File(execdir + "/Data/CMAN-Archive"));
+		if(loud)
 		System.out.println("Renamed CMAN-Archive-master to CMAN-Archive");
 		sourceFile.delete();
-		System.out.println("Deleting CMAN.tar.gz");
-		System.out.println("Done");
+		if(loud)
+		{
+			System.out.println("Deleting CMAN.tar.gz");
+			System.out.println("Done");
+		}
 	}
 	
 	public void get_info(String modname)
@@ -158,51 +194,41 @@ public class CMAN
 				incomp = incomp.substring(0, incomp.length() - 2);
 			}
 			System.out.println(json_data.get("Name").getAsString() + ":");
-			System.out.println(" Version: " + json_data.get("Version").getAsString() + " (" + stable + ")");
-			System.out.println(" Author(s): " + json_data.get("Author").getAsString());
-			System.out.println(" Description: " + json_data.get("Desc").getAsString());
-			System.out.println(" Requirements: " + reqs);
-			System.out.println(" Known Incompatibilities: " + incomp);
-			System.out.println(" Download Link: " + json_data.get("Link").getAsString());
-			System.out.println(" License: " + json_data.get("License").getAsString());
+			System.out.println(tab + "Version: " + json_data.get("Version").getAsString() + " (" + stable + ")");
+			System.out.println(tab + "Author(s): " + json_data.get("Author").getAsString());
+			System.out.println(tab + "Description: " + json_data.get("Desc").getAsString());
+			System.out.println(tab + "Requirements: " + reqs);
+			System.out.println(tab + "Known Incompatibilities: " + incomp);
+			System.out.println(tab + "Download Link: " + json_data.get("Link").getAsString());
+			System.out.println(tab + "License: " + json_data.get("License").getAsString());
 		}
 	}
 	
 	public void print_help()
 	{
 		System.out.println("Commands:");
-		System.out.println(" install 'mod': install the mod 'mod'");
-		System.out.println(" installm: install multiple mods");
-		System.out.println(" info 'mod': get info for the mod 'mod'");
-		System.out.println(" remove 'mod': remove the mod 'mod'");
-		System.out.println(" removem: remove multiple mods");
-		System.out.println(" upgrade 'mod': upgrade the mod 'mod'");
-		System.out.println(" upgradem: upgrade multiple mods");
-		System.out.println(" upgradeall: upgrade all outdated mods");
-		System.out.println(" upgrades: list available mod upgrades");
-		System.out.println(" update: update the CMAN archive");
-		System.out.println(" help: display this help message");
-		System.out.println(" version: display the CMAN version number");
-		System.out.println(" list: list installed mods");
-		System.out.println(" export 'name': export a modlist with the name 'name' , which can be imported later");
-		System.out.println(" import 'pathtomodlist': import the modlist 'pathtomodlist'");
-		System.out.println(" exit: exit CMAN");
+		System.out.println(tab + "install 'mod': install the mod 'mod'");
+		System.out.println(tab + "installm: install multiple mods");
+		System.out.println(tab + "info 'mod': get info for the mod 'mod'");
+		System.out.println(tab + "remove 'mod': remove the mod 'mod'");
+		System.out.println(tab + "removem: remove multiple mods");
+		System.out.println(tab + "upgrade 'mod': upgrade the mod 'mod'");
+		System.out.println(tab + "upgradem: upgrade multiple mods");
+		System.out.println(tab + "upgradeall: upgrade all outdated mods");
+		System.out.println(tab + "upgrades: list available mod upgrades");
+		System.out.println(tab + "update: update the CMAN archive");
+		System.out.println(tab + "help: display this help message");
+		System.out.println(tab + "version: display the CMAN version number");
+		System.out.println(tab + "list: list installed mods");
+		System.out.println(tab + "export 'name': export a modlist with the name 'name' , which can be imported later");
+		System.out.println(tab + "import 'pathtomodlist': import the modlist 'pathtomodlist'");
+		System.out.println(tab + "exit: exit CMAN");
 	}
 	
 	public static void main(String[] args) throws IOException 
 	{
-		CMAN cman = new CMAN();
-		String path = CMAN.class.getProtectionDomain().getCodeSource().getLocation().toString();
-		System.out.println(path);
-		String decodedPath = System.getProperty("user.dir");
-		try 
-		{
-			decodedPath = URLDecoder.decode(path, "UTF-8");
-		} 
-		catch (UnsupportedEncodingException e) 
-		{
-			e.printStackTrace();
-		}
+		final CMAN cman = new CMAN();
+		input = new Inputs(cman.getVersion());
 		cman.execdir = new java.io.File( "." ).getCanonicalPath(); //decodedPath.substring(1, decodedPath.length() - 1);
 		//System.out.println(decodedPath);
 		//v.text.setText(cman.execdir);
@@ -213,15 +239,31 @@ public class CMAN
 		cman.remove.init_config_remove(places[0], places[1], cman.execdir);
 		cman.upgrade.init_config_upgrade(places[0], places[1], cman.execdir);
 		cman.importexport.init_config_importexport(places[0], places[1], cman.execdir);
+		if(CMAN.input.v != null)
+		CMAN.input.v.addWindowListener(new java.awt.event.WindowAdapter() 
+		{
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) 
+		    {
+		    	try 
+		    	{
+					cman.util.delete_recursivly(cman.execdir + "/LocalData/tmp");
+				} 
+		    	catch (IOException e) 
+		    	{
+					e.printStackTrace();
+				}
+		    }
+		});
 		cman.update_archive();
-		System.out.println("CMAN-Java v" + cman.version);
+		System.out.println("CMAN-Java v" + cman.getVersion());
 		cman.check_for_updates();
 		if(cman.upgrade.get_upgrades().length != 0)
 		{
 			System.out.println("The following upgrades are availible:");
 			for(JsonObject[] upgrade : cman.upgrade.get_upgrades())
 			{	
-				System.out.println(" " + upgrade[0].get("Name").getAsString() + "(current version: " + upgrade[1].get("Version").getAsString() + ", you have: " + upgrade[0].get("Version").getAsString() + ")");
+				System.out.println(tab + upgrade[0].get("Name").getAsString() + "(current version: " + upgrade[1].get("Version").getAsString() + ", you have: " + upgrade[0].get("Version").getAsString() + ")");
 			}
 		}
 		int i = 0;
@@ -281,7 +323,7 @@ public class CMAN
 			String command = input.nextLine();
 			if(command.split(" ")[0].equals("update"))
 			{
-				cman.update_archive();
+				cman.update_archive(true);
 			}
 			else if(command.split(" ")[0].equals("upgrades"))
 			{
@@ -449,12 +491,28 @@ public class CMAN
 			{
 				cman.util.listmods();
 			}
+			else if(command.split(" ")[0].equals("info"))
+			{
+				cman.get_info(command.split(" ")[1]);
+			}
 			else if(command.split(" ")[0].equals("help") || command.split(" ")[0].equals("?"))
 			{
 				cman.print_help();
 			}
 			else if(command.split(" ")[0].equals("exit"))
 			{
+				if(CMAN.input.v != null)
+				{
+					CMAN.input.v.dispose();
+				}
+		    	try 
+		    	{
+					cman.util.delete_recursivly(cman.execdir + "/LocalData/tmp");
+				} 
+		    	catch (IOException e) 
+		    	{
+					e.printStackTrace();
+				}
 				return;
 			}
 			else if(command.split(" ")[0].equals("")){}

@@ -1,29 +1,46 @@
+/*
+ * Copyright (C) 2015 CMAN Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package cman;
 
+import java.awt.Desktop;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import org.codehaus.plexus.util.FileUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ *
+ * @author CMAN Team
+ */
 public class CMAN_install 
 {
 	public String modfolder = "@ERROR@";
@@ -207,8 +224,6 @@ public class CMAN_install
 				vname = CMAN.input.nextLine();
 				vpath = versionsfolder + vname;
 			}
-			String jarname = vname + ".jar";
-			String jarpath = vpath + jarname;
 			String foldername = modname + "-" + version;
 			System.out.print("Enter install folder name or leave blank for default (default: "+foldername+"): ");
 			String foldernamefinal = CMAN.input.nextLine();
@@ -362,10 +377,28 @@ public class CMAN_install
 			{
 				link = new URL(url);
 				ReadableByteChannel rbc = Channels.newChannel(link.openStream());
-				FileOutputStream fos = new FileOutputStream(modfolder + "/" + file_name);
+				String tempdir = execdir + "/LocalData/tmp";
+				if(!new File(tempdir).exists())
+				{
+					new File(tempdir).mkdir();
+				}
+				FileOutputStream fos = new FileOutputStream(tempdir + "/" + file_name);
 				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 				fos.close();
-				System.out.println("Done. Please run the installer.");
+				System.out.println("Done. Please run the installer at: " + tempdir.replace("\\", "/") + "/" + file_name);
+				Desktop d;
+				try
+				{
+					if(CMAN.input.v != null)
+					{
+						d = Desktop.getDesktop();
+						d.open(new File(tempdir));
+					}
+				}
+				catch (IOException e)
+				{
+					System.out.println("Couldn't open a file manager.");
+				}
 			} 
 			catch (MalformedURLException e) 
 			{

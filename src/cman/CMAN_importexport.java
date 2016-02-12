@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2015 CMAN Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package cman;
 
 import java.io.File;
@@ -5,11 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -20,6 +33,10 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ *
+ * @author CMAN Team
+ */
 public class CMAN_importexport 
 {
 	public String modfolder = "@ERROR@";
@@ -56,12 +73,11 @@ public class CMAN_importexport
 		{
 			File[] jsons = new File(execdir + "/LocalData/ModsDownloaded").listFiles();
 			String[] names = new String[jsons.length];
-			JsonObject[] json = new JsonObject[jsons.length];
 			int dirlength = new String(execdir + "/LocalData/ModsDownloaded/").length();
 			int i = 0;
 			for(File f : jsons)
 			{
-				names[i] = jsons[i].getAbsolutePath().substring(dirlength, jsons[i].getAbsolutePath().length() - 10);
+				names[i] = f.getAbsolutePath().substring(dirlength, jsons[i].getAbsolutePath().length() - 10);
 				i++;
 			}
 			
@@ -76,8 +92,12 @@ public class CMAN_importexport
 	       	FileWriter fw;
 			try 
 			{
+				if(!new File(execdir + "/LocalData/Modlists").exists())
+				{
+					new File(execdir + "/LocalData/Modlists").mkdir();
+				}
 				fw = new FileWriter(execdir + "/LocalData/Modlists/" + filename + ".modlist", false);
-				fw.write(j.getAsString());
+				fw.write(j.toString());
 				fw.close();
 			} 
 			catch (IOException e) 
@@ -126,7 +146,7 @@ public class CMAN_importexport
 			{
 				System.out.println("Installing " + mod + "...");
 				install.install_mod(mod);
-				System.out.println(mod + "installed.");
+				System.out.println(mod + " installed.");
 			}
 		} 
 		catch (JsonIOException e) 

@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2015 CMAN Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package cman;
 
 import java.io.BufferedOutputStream;
@@ -17,7 +34,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Scanner;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -30,8 +46,11 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
 
+/**
+ *
+ * @author CMAN Team
+ */
 public class CMAN_util 
 {
 	public String modfolder = "@ERROR@";
@@ -51,21 +70,23 @@ public class CMAN_util
 	
 	public void delete_recursivly(String dir) throws IOException
 	{
-		Path directory = Paths.get(dir);
-		   Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
-			   @Override
-			   public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				   Files.delete(file);
-				   return FileVisitResult.CONTINUE;
-			   }
+		if(new File(dir).exists())
+		{
+			Path directory = Paths.get(dir);
+			Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					Files.delete(file);
+					return FileVisitResult.CONTINUE;
+				}
 
-			   @Override
-			   public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				   Files.delete(dir);
-				   return FileVisitResult.CONTINUE;
-			   }
-
-		   });
+				@Override
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					Files.delete(dir);
+					return FileVisitResult.CONTINUE;
+				}				
+			});
+		}
 	}
 	
 	 public void zipDir(String zipFileName, String dir) throws Exception 
@@ -144,13 +165,9 @@ public class CMAN_util
 	*/
 	public String[] read_config()
 	{
-		String newLine = System.getProperty("line.separator");
 		String mFolder = "@ERROR@";
 		String vFolder = "@ERROR@";
 		String path = CMAN_util.class.getProtectionDomain().getCodeSource().getLocation().toString();
-		Path currentRelativePath = Paths.get("");
-		String s = currentRelativePath.toAbsolutePath().toString();
-		System.out.println("Current relative path is: " + s);
 		String decodedPath = System.getProperty("user.dir");
 		try 
 		{
@@ -171,7 +188,6 @@ public class CMAN_util
 		Gson gson = new Gson();
 		if(jsonfile.exists())
 		{
-			JsonReader reader;
 			try 
 			{
 	            JsonParser parser = new JsonParser();
@@ -366,7 +382,7 @@ public class CMAN_util
 			int i = 0;
 			for(File f : jsons)
 			{
-				names[i] = jsons[i].getAbsolutePath().substring(dirlength, jsons[i].getAbsolutePath().length() - 10);
+				names[i] = f.getAbsolutePath().substring(dirlength, jsons[i].getAbsolutePath().length() - 10);
 				i++;
 			}
 			i = 0;
@@ -386,9 +402,16 @@ public class CMAN_util
 	public void listmods()
 	{
 		System.out.println("Installed mods:");
-		for(int i = 0; i < get_installed_jsons().length; i++)
+		if(get_installed_jsons() != null)
 		{
-			System.out.println(get_installed_jsons()[i].get("Name").getAsString());
+			for(int i = 0; i < get_installed_jsons().length; i++)
+			{
+				System.out.println("        " + get_installed_jsons()[i].get("Name").getAsString());
+			}
+		}
+		else
+		{
+			System.out.println("        " + "None");
 		}
 	}
 	
