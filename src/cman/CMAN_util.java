@@ -53,9 +53,10 @@ import com.google.gson.JsonSyntaxException;
  */
 public class CMAN_util 
 {
-	public String modfolder = "@ERROR@";
-	public String versionsfolder = "@ERROR@";
-	public String execdir = "@ERROR@";
+	public String error = "@ERROR@";
+	public String modfolder = error;
+	public String versionsfolder = error;
+	public String execdir = error;
 	//static Inputs CMAN.input = CMAN.CMAN.input;
 	
 	/**
@@ -165,8 +166,8 @@ public class CMAN_util
 	*/
 	public String[] read_config()
 	{
-		String mFolder = "@ERROR@";
-		String vFolder = "@ERROR@";
+		String mFolder = error;
+		String vFolder = error;
 		String path = CMAN_util.class.getProtectionDomain().getCodeSource().getLocation().toString();
 		String decodedPath = System.getProperty("user.dir");
 		try 
