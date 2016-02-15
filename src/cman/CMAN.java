@@ -48,6 +48,7 @@ public class CMAN
 			return version;
 		}
 	}
+	//remove me
 	CMAN_util util = new CMAN_util();
 	CMAN_install install = new CMAN_install();
 	CMAN_remove remove = new CMAN_remove();
