@@ -54,9 +54,9 @@ public class CMAN
 	CMAN_upgrade upgrade = new CMAN_upgrade();
 	CMAN_importexport importexport = new CMAN_importexport();
 	static Inputs input; 
-	public String modfolder = cman.util.error;
-	public String versionsfolder = cman.util.error;
-	public String execdir = cman.util.error;
+	public String modfolder = util.error;
+	public String versionsfolder = util.error;
+	public String execdir = util.error;
 	//public static Scanner input = new Scanner(System.in);
 	static String tab = "        ";
 
