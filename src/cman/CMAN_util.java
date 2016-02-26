@@ -492,4 +492,40 @@ public class CMAN_util
 		}
 		return deps;
 	}
+	
+	public boolean instance_exists(String inst)
+	{
+		
+		File jsonfile = new File(execdir + "/LocalData/config.json");
+		if(jsonfile.exists())
+		{
+            JsonParser parser = new JsonParser();
+            JsonElement jsonElement;
+			try 
+			{
+				jsonElement = parser.parse(new FileReader(jsonfile.getAbsoluteFile()));
+				JsonObject j = jsonElement.getAsJsonObject();
+				if(j.get(inst).getAsString() != null)
+				{
+					return true;
+				}
+			} 
+			catch (JsonIOException e) 
+			{
+				System.out.println("The config JSON appears to be invalid. Delete it and run CMAN again.");
+				return false;
+			} 
+			catch (JsonSyntaxException e) 
+			{
+				System.out.println("The config JSON appears to be invalid. Delete it and run CMAN again.");
+				return false;
+			} 
+			catch (FileNotFoundException e) 
+			{
+				System.out.println("\"config.json\" " + "doesn't exist.");
+				return false;
+			}
+		}
+		return false;
+	}
 }
