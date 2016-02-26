@@ -533,4 +533,66 @@ public class CMAN_util
 		}
 		return false;
 	}
+	
+	public String[] new_config(String _instance)
+	{
+		Gson gson = new Gson();
+		JsonParser parser = new JsonParser();
+		JsonElement jsonElement;
+		try 
+		{
+			jsonElement = parser.parse(new FileReader(execdir + "/LocalData/config.json"));
+	        JsonObject j = jsonElement.getAsJsonObject();
+	        if(j.getAsJsonObject(_instance).isJsonNull())
+	        {
+	        	String mf = CMAN.input.nextLine();
+	        	JsonElement mfelement = new JsonParser().parse(mf);
+	        	String vf = CMAN.input.nextLine();
+	        	JsonElement vfelement = new JsonParser().parse(vf);
+	        	JsonObject instobj = new JsonObject();
+	        	instobj.add("modfolder", mfelement);
+	        	instobj.add("versionsfolder", vfelement);
+	        	j.add(_instance, instobj);
+	            FileWriter fw = new FileWriter(execdir + "/LocalData/config.json", false);
+	            fw.write(gson.toJson(j));
+	            fw.close();
+	            System.out.println("Done");
+	            return new String[] {mf, vf};
+	        }
+		} 
+		catch (JsonIOException | JsonSyntaxException | IOException e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void rm_config(String _instance)
+	{
+		if(instance.equals(_instance))
+		{
+			System.out.println("Cannot remove instance while it is active! Select another instance first.");
+			return;
+		}
+		Gson gson = new Gson();
+		JsonParser parser = new JsonParser();
+		JsonElement jsonElement;
+		try 
+		{
+			jsonElement = parser.parse(new FileReader(execdir + "/LocalData/config.json"));
+	        JsonObject j = jsonElement.getAsJsonObject();
+	        if(!j.getAsJsonObject(_instance).isJsonNull())
+	        {
+	        	j.remove(_instance);
+	            FileWriter fw = new FileWriter(execdir + "/LocalData/config.json", false);
+	            fw.write(gson.toJson(j));
+	            fw.close();
+	            System.out.println("Done");
+	        }
+		} 
+		catch (JsonIOException | JsonSyntaxException | IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
 }
