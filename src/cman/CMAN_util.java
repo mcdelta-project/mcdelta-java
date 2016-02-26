@@ -57,16 +57,18 @@ public class CMAN_util
 	public String modfolder = error;
 	public String versionsfolder = error;
 	public String execdir = error;
+	public String instance = error;
 	//static Inputs CMAN.input = CMAN.CMAN.input;
 	
 	/**
 	Initialization for util.
 	*/
-	public void init_config_util(String mf, String vf, String ed)
+	public void init_config_util(String mf, String vf, String ed, String i)
 	{
 		modfolder = mf;
 		versionsfolder = vf;
 		execdir = ed;
+		instance = i;
 	}
 	
 	public void delete_recursivly(String dir) throws IOException
@@ -194,34 +196,37 @@ public class CMAN_util
 	            JsonParser parser = new JsonParser();
 	            JsonElement jsonElement = parser.parse(new FileReader(jsonfile.getAbsoluteFile()));
 	            JsonObject j = jsonElement.getAsJsonObject();
-	            JsonElement mfolder = j.get("modfolder");
-	            if(!mfolder.isJsonNull())
+	            if(instance_exists(instance))
 	            {
-	            	mFolder = mfolder.getAsString();
+		            JsonElement mfolder = j.getAsJsonObject(instance).get("modfolder");
+		            if(!mfolder.isJsonNull())
+		            {
+		            	mFolder = mfolder.getAsString();
+		            }
+		            else
+		            {
+		            	System.out.println("Enter mod folder location (absolute path): ");
+		            	mFolder = CMAN.input.nextLine();
+		            	JsonElement mfelement = new JsonParser().parse(mFolder);
+		            	j.getAsJsonObject(instance).add("modfolder", mfelement);
+		            }
+		            JsonElement vfolder = j.getAsJsonObject(instance).get("versionsfolder");
+		            if(!vfolder.isJsonNull())
+		            {
+		            	vFolder = vfolder.getAsString();
+		            }
+		            else
+		            {
+		            	System.out.println("Enter mod version folder location (absolute path): ");
+		            	vFolder = CMAN.input.nextLine();
+		            	JsonElement vfelement = new JsonParser().parse(vFolder);
+		            	j.getAsJsonObject(instance).add("versionfolder", vfelement);
+		            }
+		            
+		            FileWriter fw = new FileWriter(jsonfile, false);
+		            fw.write(gson.toJson(j));
+		            fw.close();
 	            }
-	            else
-	            {
-	            	System.out.println("Enter mod folder location (absolute path): ");
-	            	mFolder = CMAN.input.nextLine();
-	            	JsonElement mfelement = new JsonParser().parse(mFolder);
-	            	j.add("modfolder", mfelement);
-	            }
-	            JsonElement vfolder = j.get("versionsfolder");
-	            if(!vfolder.isJsonNull())
-	            {
-	            	vFolder = vfolder.getAsString();
-	            }
-	            else
-	            {
-	            	System.out.println("Enter mod version folder location (absolute path): ");
-	            	vFolder = CMAN.input.nextLine();
-	            	JsonElement vfelement = new JsonParser().parse(vFolder);
-	            	j.add("versionfolder", vfelement);
-	            }
-	            
-	            FileWriter fw = new FileWriter(jsonfile, false);
-	            fw.write(gson.toJson(j));
-	            fw.close();
 			}
 			catch (FileNotFoundException e) 
 			{
@@ -243,7 +248,7 @@ public class CMAN_util
             try 
             {
             	FileWriter fw = new FileWriter(jsonfile, false);
-				fw.write("{\"modfolder\":\"" + mFolder + "\",\"versionsfolder\":\"" + vFolder + "\"}");
+				fw.write("{\"" + instance + "\":{\"modfolder\":\"" + mFolder + "\",\"versionsfolder\":\"" + vFolder + "\"}}");
 				fw.close();
 			} 
             catch (IOException e) 
