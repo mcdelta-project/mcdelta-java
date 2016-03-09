@@ -198,8 +198,9 @@ public class CMAN_util
 	            JsonObject j = jsonElement.getAsJsonObject();
 	            if(instance_exists(instance))
 	            {
-		            JsonElement mfolder = j.getAsJsonObject(instance).get("modfolder");
-		            if(!mfolder.isJsonNull())
+	            	JsonObject inst = j.getAsJsonObject(instance);
+		            JsonElement mfolder = inst.get("modfolder");
+		            if(inst.has("modfolder"))
 		            {
 		            	mFolder = mfolder.getAsString();
 		            }
@@ -210,8 +211,8 @@ public class CMAN_util
 		            	JsonElement mfelement = new JsonParser().parse(mFolder);
 		            	j.getAsJsonObject(instance).add("modfolder", mfelement);
 		            }
-		            JsonElement vfolder = j.getAsJsonObject(instance).get("versionsfolder");
-		            if(!vfolder.isJsonNull())
+		            JsonElement vfolder = inst.get("versionfolder");
+		            if(inst.has("versionfolder"))
 		            {
 		            	vFolder = vfolder.getAsString();
 		            }
@@ -219,10 +220,28 @@ public class CMAN_util
 		            {
 		            	System.out.println("Enter mod version folder location (absolute path): ");
 		            	vFolder = CMAN.input.nextLine();
-		            	JsonElement vfelement = new JsonParser().parse(vFolder);
+		            	JsonElement vfelement = new JsonParser().parse("\"" + vFolder + "\"");
 		            	j.getAsJsonObject(instance).add("versionfolder", vfelement);
 		            }
 		            
+		            FileWriter fw = new FileWriter(jsonfile, false);
+		            fw.write(gson.toJson(j));
+		            fw.close();
+	            }
+	            else
+	            {
+	            	System.out.println("Instance \"" + instance + "\" not found.");
+	            	System.out.print("Enter mod folder location (absolute path): ");
+	            	mFolder = CMAN.input.nextLine();
+	            	System.out.print("Enter mod version folder location (absolute path): ");
+	            	vFolder = CMAN.input.nextLine();
+	            	JsonObject inst = new JsonObject();
+	            	System.out.println(mFolder);
+	            	JsonElement mElement = new JsonParser().parse("\"" + mFolder + "\"");
+	            	JsonElement vElement = new JsonParser().parse("\"" + vFolder + "\"");
+	            	inst.add("modfolder", mElement);
+	            	inst.add("versionfolder", vElement);
+	            	j.add(instance, inst);
 		            FileWriter fw = new FileWriter(jsonfile, false);
 		            fw.write(gson.toJson(j));
 		            fw.close();
@@ -384,12 +403,12 @@ public class CMAN_util
 	*/
 	public JsonObject[] get_installed_jsons(String inst)
 	{
-		if(new File(execdir + "/LocalData/ModsDownloaded").exists())
+		if(new File(execdir + "/LocalData/ModsDownloaded/" + instance).exists())
 		{
-			File[] jsons = new File(execdir + "/LocalData/ModsDownloaded").listFiles();
+			File[] jsons = new File(execdir + "/LocalData/ModsDownloaded/" + instance).listFiles();
 			String[] names = new String[jsons.length];
 			JsonObject[] json = new JsonObject[jsons.length];
-			int dirlength = new String(execdir + "/LocalData/ModsDownloaded/").length();
+			int dirlength = new String(execdir + "/LocalData/ModsDownloaded/" + instance + "/").length();
 			int i = 0;
 			for(File f : jsons)
 			{
@@ -515,7 +534,7 @@ public class CMAN_util
 			{
 				jsonElement = parser.parse(new FileReader(jsonfile.getAbsoluteFile()));
 				JsonObject j = jsonElement.getAsJsonObject();
-				if(j.get(inst).getAsString() != null)
+				if(j.has(inst))
 				{
 					return true;
 				}

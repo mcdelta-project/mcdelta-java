@@ -18,8 +18,10 @@
 package cman;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -57,9 +59,34 @@ public class CMAN
 	public String modfolder = util.error;
 	public String versionsfolder = util.error;
 	public String execdir = util.error;
+	public String instance = util.error;
 	//public static Scanner input = new Scanner(System.in);
 	static String tab = "        ";
 
+	public String read_default_instance()
+	{
+		File defaultFile = new File(execdir + "/LocalData/default_instance.txt");
+		String defaultInstance;
+		try 
+		{
+			Scanner s = new Scanner(defaultFile);
+			defaultInstance = s.nextLine();
+			s.close();
+		}
+		catch (FileNotFoundException e) 
+		{
+			defaultInstance = "default";
+			try 
+			{
+				defaultFile.createNewFile();
+				PrintWriter w = new PrintWriter(defaultFile);
+				w.println(defaultInstance);
+				w.close();
+			} 
+			catch (IOException e1) {}
+		}
+		return defaultInstance;
+	}
 	
 	public void check_for_updates()
 	{
@@ -232,13 +259,15 @@ public class CMAN
 		cman.execdir = new java.io.File( "." ).getCanonicalPath(); //decodedPath.substring(1, decodedPath.length() - 1);
 		//System.out.println(decodedPath);
 		//v.text.setText(cman.execdir);
+		cman.instance = cman.read_default_instance();
 		cman.util.execdir = cman.execdir;
+		cman.util.instance = cman.instance;
 		String[] places = cman.util.read_config();
-		cman.util.init_config_util(places[0], places[1], cman.execdir);
-		cman.install.init_config_install(places[0], places[1], cman.execdir);
-		cman.remove.init_config_remove(places[0], places[1], cman.execdir);
-		cman.upgrade.init_config_upgrade(places[0], places[1], cman.execdir);
-		cman.importexport.init_config_importexport(places[0], places[1], cman.execdir);
+		cman.util.init_config_util(places[0], places[1], cman.execdir, cman.instance);
+		cman.install.init_config_install(places[0], places[1], cman.execdir, cman.instance);
+		cman.remove.init_config_remove(places[0], places[1], cman.execdir, cman.instance);
+		cman.upgrade.init_config_upgrade(places[0], places[1], cman.execdir, cman.instance);
+		cman.importexport.init_config_importexport(places[0], places[1], cman.execdir, cman.instance);
 		if(CMAN.input.v != null)
 		CMAN.input.v.addWindowListener(new java.awt.event.WindowAdapter() 
 		{
