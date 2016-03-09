@@ -316,12 +316,12 @@ public class CMAN_util
 	*/
 	public JsonObject get_installed_json(String modname)
 	{
-		if(!Files.exists(Paths.get(execdir + "/LocalData/ModsDownloaded"), LinkOption.NOFOLLOW_LINKS))
+		if(!Files.exists(Paths.get(execdir + "/LocalData/ModsDownloaded/" + instance), LinkOption.NOFOLLOW_LINKS))
 		{
 			return null;
 		}
 		
-		File jsonfile = new File(execdir + "/LocalData/ModsDownloaded" + modname + ".installed");
+		File jsonfile = new File(execdir + "/LocalData/ModsDownloaded/" + instance + "/" + modname + ".installed");
 		if(jsonfile.exists())
 		{
             JsonParser parser = new JsonParser();
@@ -360,11 +360,11 @@ public class CMAN_util
 	*/
 	public boolean mod_installed(String modname)
 	{
-		if(!Files.exists(Paths.get(execdir + "/LocalData/ModsDownloaded"), LinkOption.NOFOLLOW_LINKS))
+		if(!Files.exists(Paths.get(execdir + "/LocalData/ModsDownloaded/" + instance), LinkOption.NOFOLLOW_LINKS))
 		{
 			return false;
 		}
-		if(new File(execdir + "/LocalData/ModsDownloaded/" + modname + ".installed").exists())
+		if(new File(execdir + "/LocalData/ModsDownloaded/" + instance + "/" + modname + ".installed").exists())
 		{
 			return true;
 		}
@@ -374,10 +374,15 @@ public class CMAN_util
 		}
 	}
 	
+	public JsonObject[] get_installed_jsons()
+	{
+		return get_installed_jsons(null);
+	}
+	
 	/**
 	Returns an array of the json files for all of the installed mods.
 	*/
-	public JsonObject[] get_installed_jsons()
+	public JsonObject[] get_installed_jsons(String inst)
 	{
 		if(new File(execdir + "/LocalData/ModsDownloaded").exists())
 		{
