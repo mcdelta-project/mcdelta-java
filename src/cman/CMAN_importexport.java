@@ -42,6 +42,7 @@ public class CMAN_importexport
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
+	public String instance = "@ERROR@";
 	//public static Scanner CMAN.input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	CMAN_install install = new CMAN_install();
@@ -49,13 +50,14 @@ public class CMAN_importexport
 	/**
 	Initialization for importexport.
 	*/
-	public void init_config_importexport(String mf, String vf, String ed)
+	public void init_config_importexport(String mf, String vf, String ed, String i)
 	{
 		modfolder = mf;
 		versionsfolder = vf;
 		execdir = ed;
-		this.util.init_config_util(mf, vf, ed);
-		this.install.init_config_install(mf, vf, ed);
+		instance = i;
+		this.util.init_config_util(mf, vf, ed, i);
+		this.install.init_config_install(mf, vf, ed, i);
 	}
 	
 	/**
@@ -69,11 +71,11 @@ public class CMAN_importexport
 			System.out.println("What would you like your new modlist to be called?");
 			filename = CMAN.input.nextLine();
 		}
-		if(new File(execdir + "/LocalData/ModsDownloaded").exists())
+		if(new File(execdir + "/LocalData/ModsDownloaded/" + instance).exists())
 		{
-			File[] jsons = new File(execdir + "/LocalData/ModsDownloaded").listFiles();
+			File[] jsons = new File(execdir + "/LocalData/ModsDownloaded/" + instance).listFiles();
 			String[] names = new String[jsons.length];
-			int dirlength = new String(execdir + "/LocalData/ModsDownloaded/").length();
+			int dirlength = new String(execdir + "/LocalData/ModsDownloaded/" + instance).length();
 			int i = 0;
 			for(File f : jsons)
 			{
