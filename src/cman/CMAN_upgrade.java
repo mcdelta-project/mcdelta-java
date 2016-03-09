@@ -32,6 +32,7 @@ public class CMAN_upgrade
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
+	public String instance = "@ERROR@";
 	//public static Scanner CMAN.input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	CMAN_remove remove = new CMAN_remove();
@@ -40,14 +41,15 @@ public class CMAN_upgrade
 	/**
 	Initialization for upgrade.
 	*/
-	public void init_config_upgrade(String mf, String vf, String ed)
+	public void init_config_upgrade(String mf, String vf, String ed, String i)
 	{
 		modfolder = mf;
 		versionsfolder = vf;
 		execdir = ed;
-		this.util.init_config_util(mf, vf, ed);
-		this.remove.init_config_remove(mf, vf, ed);
-		this.install.init_config_install(mf, vf, ed);
+		instance = i;
+		this.util.init_config_util(mf, vf, ed, i);
+		this.remove.init_config_remove(mf, vf, ed, i);
+		this.install.init_config_install(mf, vf, ed, i);
 	}
 	
 	/**
@@ -61,7 +63,7 @@ public class CMAN_upgrade
 			modname = CMAN.input.nextLine();
 		}
 		JsonObject[] update = {util.get_installed_json(modname), util.get_json(modname)};
-		if(new File(execdir + "/LocalData/ModsDownloaded" + modname + ".installed").exists())
+		if(new File(execdir + "/LocalData/ModsDownloaded/" + instance + "/" + modname + ".installed").exists())
 		{
 			System.out.println(modname + ".installed found");
 		}
