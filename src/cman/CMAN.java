@@ -214,11 +214,16 @@ public class CMAN
 		System.out.println(tab + "removem: remove multiple mods");
 		System.out.println(tab + "upgrade 'mod': upgrade the mod 'mod'");
 		System.out.println(tab + "upgradem: upgrade multiple mods");
-		System.out.println(tab + "upgradeall: upgrade all outdated mods");
-		System.out.println(tab + "upgrades: list available mod upgrades");
+		System.out.println(tab + "upgradeall inst: upgrade all outdated mods in instance inst or * for current");
+		System.out.println(tab + "upgrades inst: list available mod upgrades in instance inst or * for current");
 		System.out.println(tab + "update: update the CMAN archive");
 		System.out.println(tab + "help: display this help message");
 		System.out.println(tab + "version: display the CMAN version number");
+		System.out.println(tab + "inst[ance] 'inst': change current instance to intance 'inst'");
+		System.out.println(tab + "setdefaultinst[ance] 'inst': sets default instance, used on start");
+		System.out.println(tab + "addinst[ance] 'inst': create new instance 'inst'");
+		System.out.println(tab + "rminst[ance] 'inst': deletes an instance 'inst'");
+		System.out.println(tab + "inst[ance]s: list all avaiable instances");
 		System.out.println(tab + "list: list installed mods");
 		System.out.println(tab + "export 'name': export a modlist with the name 'name' , which can be imported later");
 		System.out.println(tab + "import 'pathtomodlist': import the modlist 'pathtomodlist'");
