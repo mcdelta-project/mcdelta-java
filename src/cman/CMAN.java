@@ -184,6 +184,18 @@ public class CMAN
 		}
 	}
 	
+	public void setup_config(String _instance)
+	{
+		instance = _instance;
+		util.instance = instance;
+		String[] places2 = util.read_config();
+		util.init_config_util(places2[0], places2[1], execdir, instance);
+		install.init_config_install(places2[0], places2[1], execdir, instance);
+		remove.init_config_remove(places2[0], places2[1], execdir, instance);
+		upgrade.init_config_upgrade(places2[0], places2[1], execdir, instance);
+		importexport.init_config_importexport(places2[0], places2[1], execdir, instance);
+	}
+	
 	public void get_info(String modname)
 	{
 		if(modname == null)
@@ -341,6 +353,11 @@ public class CMAN
 			if(arg.equals("--import"))
 			{
 				cman.importexport.import_mods(args[i + 1]);
+			}
+			if(arg.equals("-I") || arg.equals("--instance"))
+			{
+				String inst = args[i + 1];
+				cman.setup_config(inst);
 			}
 			i++;
 		}
