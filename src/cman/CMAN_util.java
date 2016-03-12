@@ -571,10 +571,10 @@ public class CMAN_util
 	        {
 	        	System.out.print("Enter mod folder (absolute path): ");
 	        	String mf = CMAN.input.nextLine();
-	        	JsonElement mfelement = new JsonParser().parse(mf);
+	        	JsonElement mfelement = new JsonParser().parse("\"" + mf + "\"");
 	        	System.out.print("Enter versions folder (absolute path): ");
 	        	String vf = CMAN.input.nextLine();
-	        	JsonElement vfelement = new JsonParser().parse(vf);
+	        	JsonElement vfelement = new JsonParser().parse("\"" + vf + "\"");
 	        	JsonObject instobj = new JsonObject();
 	        	instobj.add("modfolder", mfelement);
 	        	instobj.add("versionsfolder", vfelement);
