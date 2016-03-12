@@ -297,16 +297,6 @@ public class CMAN
 		    }
 		});
 		cman.update_archive();
-		System.out.println("CMAN-Java v" + cman.getVersion());
-		cman.check_for_updates();
-		if(cman.upgrade.get_upgrades().length != 0)
-		{
-			System.out.println("The following upgrades are availible:");
-			for(JsonObject[] upgrade : cman.upgrade.get_upgrades())
-			{	
-				System.out.println(tab + upgrade[0].get("Name").getAsString() + "(current version: " + upgrade[1].get("Version").getAsString() + ", you have: " + upgrade[0].get("Version").getAsString() + ")");
-			}
-		}
 		int i = 0;
 		for(String arg : args)
 		{
@@ -361,6 +351,18 @@ public class CMAN
 			}
 			i++;
 		}
+		System.out.println("CMAN-Java v" + cman.getVersion());
+		System.out.println("Selected instance: " + cman.instance);
+		cman.check_for_updates();
+		if(cman.upgrade.get_upgrades().length != 0)
+		{
+			System.out.println("The following upgrades are availible:");
+			for(JsonObject[] upgrade : cman.upgrade.get_upgrades(cman.instance))
+			{	
+				System.out.println(tab + upgrade[0].get("Name").getAsString() + "(current version: " + upgrade[1].get("Version").getAsString() + ", you have: " + upgrade[0].get("Version").getAsString() + ")");
+			}
+		}
+		
 		cman.print_help();
 		
 		while(true)

@@ -89,15 +89,20 @@ public class CMAN_upgrade
 		}
 	}
 	
+	public JsonObject[][] get_upgrades()
+	{
+		return get_upgrades(instance);
+	}
+	
 	/**
 	Returns a 2D array. 1st coordinate is the upgrade set, 2nd has current installed version (0) and latest version (1)
 	*/
-	public JsonObject[][] get_upgrades()
+	public JsonObject[][] get_upgrades(String inst)
 	{
 		ArrayList<JsonObject[]> updates = new ArrayList<JsonObject[]>();
 		if(!(util.get_installed_jsons() == null))
 		{
-			JsonObject[] mods = util.get_installed_jsons();
+			JsonObject[] mods = util.get_installed_jsons(inst);
 			for(JsonObject mod : mods)
 			{
 				if(mod != null)

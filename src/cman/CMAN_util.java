@@ -395,7 +395,7 @@ public class CMAN_util
 	
 	public JsonObject[] get_installed_jsons()
 	{
-		return get_installed_jsons(null);
+		return get_installed_jsons(instance);
 	}
 	
 	/**
@@ -403,12 +403,12 @@ public class CMAN_util
 	*/
 	public JsonObject[] get_installed_jsons(String inst)
 	{
-		if(new File(execdir + "/LocalData/ModsDownloaded/" + instance).exists())
+		if(new File(execdir + "/LocalData/ModsDownloaded/" + inst).exists())
 		{
-			File[] jsons = new File(execdir + "/LocalData/ModsDownloaded/" + instance).listFiles();
+			File[] jsons = new File(execdir + "/LocalData/ModsDownloaded/" + inst).listFiles();
 			String[] names = new String[jsons.length];
 			JsonObject[] json = new JsonObject[jsons.length];
-			int dirlength = new String(execdir + "/LocalData/ModsDownloaded/" + instance + "/").length();
+			int dirlength = new String(execdir + "/LocalData/ModsDownloaded/" + inst + "/").length();
 			int i = 0;
 			for(File f : jsons)
 			{
