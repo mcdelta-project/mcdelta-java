@@ -211,8 +211,8 @@ public class CMAN_util
 		            	JsonElement mfelement = new JsonParser().parse(mFolder);
 		            	j.getAsJsonObject(instance).add("modfolder", mfelement);
 		            }
-		            JsonElement vfolder = inst.get("versionfolder");
-		            if(inst.has("versionfolder"))
+		            JsonElement vfolder = inst.get("versionsfolder");
+		            if(inst.has("versionsfolder"))
 		            {
 		            	vFolder = vfolder.getAsString();
 		            }
@@ -221,7 +221,7 @@ public class CMAN_util
 		            	System.out.println("Enter mod version folder location (absolute path): ");
 		            	vFolder = CMAN.input.nextLine();
 		            	JsonElement vfelement = new JsonParser().parse("\"" + vFolder + "\"");
-		            	j.getAsJsonObject(instance).add("versionfolder", vfelement);
+		            	j.getAsJsonObject(instance).add("versionsfolder", vfelement);
 		            }
 		            
 		            FileWriter fw = new FileWriter(jsonfile, false);
@@ -240,7 +240,7 @@ public class CMAN_util
 	            	JsonElement mElement = new JsonParser().parse("\"" + mFolder + "\"");
 	            	JsonElement vElement = new JsonParser().parse("\"" + vFolder + "\"");
 	            	inst.add("modfolder", mElement);
-	            	inst.add("versionfolder", vElement);
+	            	inst.add("versionsfolder", vElement);
 	            	j.add(instance, inst);
 		            FileWriter fw = new FileWriter(jsonfile, false);
 		            fw.write(gson.toJson(j));
@@ -567,10 +567,12 @@ public class CMAN_util
 		{
 			jsonElement = parser.parse(new FileReader(execdir + "/LocalData/config.json"));
 	        JsonObject j = jsonElement.getAsJsonObject();
-	        if(j.getAsJsonObject(_instance).isJsonNull())
+	        if(!j.has(_instance))
 	        {
+	        	System.out.print("Enter mod folder (absolute path): ");
 	        	String mf = CMAN.input.nextLine();
 	        	JsonElement mfelement = new JsonParser().parse(mf);
+	        	System.out.print("Enter versions folder (absolute path): ");
 	        	String vf = CMAN.input.nextLine();
 	        	JsonElement vfelement = new JsonParser().parse(vf);
 	        	JsonObject instobj = new JsonObject();
@@ -605,7 +607,7 @@ public class CMAN_util
 		{
 			jsonElement = parser.parse(new FileReader(execdir + "/LocalData/config.json"));
 	        JsonObject j = jsonElement.getAsJsonObject();
-	        if(!j.getAsJsonObject(_instance).isJsonNull())
+	        if(j.has(_instance))
 	        {
 	        	j.remove(_instance);
 	            FileWriter fw = new FileWriter(execdir + "/LocalData/config.json", false);
