@@ -375,8 +375,37 @@ public class CMAN
 			}
 			else if(command.split(" ")[0].equals("upgrades"))
 			{
-				cman.update_archive();
-				cman.upgrade.check_upgrades(true);
+				if(command.split(" ").length == 2 && command.split(" ")[1].equals("*"))
+				{
+					cman.update_archive();
+					cman.upgrade.check_upgrades(true);
+				}
+				else if(command.split(" ").length == 2)
+				{
+					cman.update_archive();
+					if(cman.util.instance_exists(command.split(" ")[1]))
+						cman.upgrade.check_upgrades(true, command.split(" ")[1]);
+					else
+						System.out.println("Instance \"" + command.split(" ")[1] + "\" doesn't exist.");
+				}
+				else if(command.split(" ").length == 1)
+				{
+					System.out.print("Enter instance name: ");
+					String inst = CMAN.input.nextLine();
+					if(inst.equals("*"))
+					{
+						cman.update_archive();
+						cman.upgrade.check_upgrades(true);
+					}
+					else
+					{
+						cman.update_archive();
+						if(cman.util.instance_exists(inst))
+							cman.upgrade.check_upgrades(true, inst);
+						else
+							System.out.println("Instance \"" + inst + "\" doesn't exist.");
+					}
+				}
 			}
 			else if(command.split(" ")[0].equals("upgrade"))
 			{
