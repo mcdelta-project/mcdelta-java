@@ -28,18 +28,20 @@ public class CMAN_remove
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
+	public String instance = "@ERROR@";
 	//public static Scanner CMAN.input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	
 	/**
 	Initialization for remove.
 	*/
-	public void init_config_remove(String mf, String vf, String ed)
+	public void init_config_remove(String mf, String vf, String ed, String i)
 	{
 		modfolder = mf;
 		versionsfolder = vf;
 		execdir = ed;
-		this.util.init_config_util(mf, vf, ed);
+		instance = i;
+		this.util.init_config_util(mf, vf, ed, i);
 	}
 	
 	/**
@@ -53,7 +55,7 @@ public class CMAN_remove
 			modname = CMAN.input.nextLine();
 		}
 		System.out.println("Removing file for mod in ModsDownloaded");
-		if(!new File(execdir + "/LocalData/ModsDownloaded/" + modname + ".installed").delete())
+		if(!new File(execdir + "/LocalData/ModsDownloaded/" + instance + "/" + modname + ".installed").delete())
 		{
 			System.out.println("Either " + modname + " is not installed, or something went horribly wrong.");
 			return;

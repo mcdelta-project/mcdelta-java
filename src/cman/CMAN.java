@@ -18,18 +18,25 @@
 package cman;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  *
@@ -57,9 +64,34 @@ public class CMAN
 	public String modfolder = util.error;
 	public String versionsfolder = util.error;
 	public String execdir = util.error;
+	public String instance = util.error;
 	//public static Scanner input = new Scanner(System.in);
 	static String tab = "        ";
 
+	public String read_default_instance()
+	{
+		File defaultFile = new File(execdir + "/LocalData/default_instance.txt");
+		String defaultInstance;
+		try 
+		{
+			Scanner s = new Scanner(defaultFile);
+			defaultInstance = s.nextLine();
+			s.close();
+		}
+		catch (FileNotFoundException e) 
+		{
+			defaultInstance = "default";
+			try 
+			{
+				defaultFile.createNewFile();
+				PrintWriter w = new PrintWriter(defaultFile);
+				w.println(defaultInstance);
+				w.close();
+			} 
+			catch (IOException e1) {}
+		}
+		return defaultInstance;
+	}
 	
 	public void check_for_updates()
 	{
@@ -157,6 +189,18 @@ public class CMAN
 		}
 	}
 	
+	public void setup_config(String _instance)
+	{
+		instance = _instance;
+		util.instance = instance;
+		String[] places2 = util.read_config();
+		util.init_config_util(places2[0], places2[1], execdir, instance);
+		install.init_config_install(places2[0], places2[1], execdir, instance);
+		remove.init_config_remove(places2[0], places2[1], execdir, instance);
+		upgrade.init_config_upgrade(places2[0], places2[1], execdir, instance);
+		importexport.init_config_importexport(places2[0], places2[1], execdir, instance);
+	}
+	
 	public void get_info(String modname)
 	{
 		if(modname == null)
@@ -214,11 +258,16 @@ public class CMAN
 		System.out.println(tab + "removem: remove multiple mods");
 		System.out.println(tab + "upgrade 'mod': upgrade the mod 'mod'");
 		System.out.println(tab + "upgradem: upgrade multiple mods");
-		System.out.println(tab + "upgradeall: upgrade all outdated mods");
-		System.out.println(tab + "upgrades: list available mod upgrades");
+		System.out.println(tab + "upgradeall inst: upgrade all outdated mods in instance inst or * for current");
+		System.out.println(tab + "upgrades inst: list available mod upgrades in instance inst or * for current");
 		System.out.println(tab + "update: update the CMAN archive");
 		System.out.println(tab + "help: display this help message");
 		System.out.println(tab + "version: display the CMAN version number");
+		System.out.println(tab + "inst[ance] 'inst': change current instance to intance 'inst'");
+		System.out.println(tab + "setdefaultinst[ance] 'inst': sets default instance, used on start");
+		System.out.println(tab + "addinst[ance] 'inst': create new instance 'inst'");
+		System.out.println(tab + "rminst[ance] 'inst': deletes an instance 'inst'");
+		System.out.println(tab + "inst[ance]s: list all avaiable instances");
 		System.out.println(tab + "list: list installed mods");
 		System.out.println(tab + "export 'name': export a modlist with the name 'name' , which can be imported later");
 		System.out.println(tab + "import 'pathtomodlist': import the modlist 'pathtomodlist'");
@@ -232,13 +281,15 @@ public class CMAN
 		cman.execdir = new java.io.File( "." ).getCanonicalPath(); //decodedPath.substring(1, decodedPath.length() - 1);
 		//System.out.println(decodedPath);
 		//v.text.setText(cman.execdir);
+		cman.instance = cman.read_default_instance();
 		cman.util.execdir = cman.execdir;
+		cman.util.instance = cman.instance;
 		String[] places = cman.util.read_config();
-		cman.util.init_config_util(places[0], places[1], cman.execdir);
-		cman.install.init_config_install(places[0], places[1], cman.execdir);
-		cman.remove.init_config_remove(places[0], places[1], cman.execdir);
-		cman.upgrade.init_config_upgrade(places[0], places[1], cman.execdir);
-		cman.importexport.init_config_importexport(places[0], places[1], cman.execdir);
+		cman.util.init_config_util(places[0], places[1], cman.execdir, cman.instance);
+		cman.install.init_config_install(places[0], places[1], cman.execdir, cman.instance);
+		cman.remove.init_config_remove(places[0], places[1], cman.execdir, cman.instance);
+		cman.upgrade.init_config_upgrade(places[0], places[1], cman.execdir, cman.instance);
+		cman.importexport.init_config_importexport(places[0], places[1], cman.execdir, cman.instance);
 		if(CMAN.input.v != null)
 		CMAN.input.v.addWindowListener(new java.awt.event.WindowAdapter() 
 		{
@@ -256,16 +307,6 @@ public class CMAN
 		    }
 		});
 		cman.update_archive();
-		System.out.println("CMAN-Java v" + cman.getVersion());
-		cman.check_for_updates();
-		if(cman.upgrade.get_upgrades().length != 0)
-		{
-			System.out.println("The following upgrades are availible:");
-			for(JsonObject[] upgrade : cman.upgrade.get_upgrades())
-			{	
-				System.out.println(tab + upgrade[0].get("Name").getAsString() + "(current version: " + upgrade[1].get("Version").getAsString() + ", you have: " + upgrade[0].get("Version").getAsString() + ")");
-			}
-		}
 		int i = 0;
 		for(String arg : args)
 		{
@@ -313,8 +354,25 @@ public class CMAN
 			{
 				cman.importexport.import_mods(args[i + 1]);
 			}
+			if(arg.equals("-I") || arg.equals("--instance"))
+			{
+				String inst = args[i + 1];
+				cman.setup_config(inst);
+			}
 			i++;
 		}
+		System.out.println("CMAN-Java v" + cman.getVersion());
+		System.out.println("Selected instance: " + cman.instance);
+		cman.check_for_updates();
+		if(cman.upgrade.get_upgrades().length != 0)
+		{
+			System.out.println("The following upgrades are availible:");
+			for(JsonObject[] upgrade : cman.upgrade.get_upgrades(cman.instance))
+			{	
+				System.out.println(tab + upgrade[0].get("Name").getAsString() + "(current version: " + upgrade[1].get("Version").getAsString() + ", you have: " + upgrade[0].get("Version").getAsString() + ")");
+			}
+		}
+		
 		cman.print_help();
 		
 		while(true)
@@ -327,8 +385,37 @@ public class CMAN
 			}
 			else if(command.split(" ")[0].equals("upgrades"))
 			{
-				cman.update_archive();
-				cman.upgrade.check_upgrades(true);
+				if(command.split(" ").length == 2 && command.split(" ")[1].equals("*"))
+				{
+					cman.update_archive();
+					cman.upgrade.check_upgrades(true);
+				}
+				else if(command.split(" ").length == 2)
+				{
+					cman.update_archive();
+					if(cman.util.instance_exists(command.split(" ")[1]))
+						cman.upgrade.check_upgrades(true, command.split(" ")[1]);
+					else
+						System.out.println("Instance \"" + command.split(" ")[1] + "\" doesn't exist.");
+				}
+				else if(command.split(" ").length == 1)
+				{
+					System.out.print("Enter instance name: ");
+					String inst = CMAN.input.nextLine();
+					if(inst.equals("*"))
+					{
+						cman.update_archive();
+						cman.upgrade.check_upgrades(true);
+					}
+					else
+					{
+						cman.update_archive();
+						if(cman.util.instance_exists(inst))
+							cman.upgrade.check_upgrades(true, inst);
+						else
+							System.out.println("Instance \"" + inst + "\" doesn't exist.");
+					}
+				}
 			}
 			else if(command.split(" ")[0].equals("upgrade"))
 			{
@@ -350,11 +437,50 @@ public class CMAN
 			}
 			else if(command.split(" ")[0].equals("upgradeall"))
 			{
+				String inst;
+				if(command.split(" ").length == 2 && command.split(" ")[1].equals("*"))
+				{
+					cman.update_archive();
+					inst = cman.instance;
+				}
+				else if(command.split(" ").length == 2)
+				{
+					cman.update_archive();
+					if(cman.util.instance_exists(command.split(" ")[1]))
+						inst = command.split(" ")[1];
+					else
+					{
+						System.out.println("Instance \"" + command.split(" ")[1] + "\" doesn't exist.");
+						inst = cman.instance;
+					}
+				}
+				else if(command.split(" ").length == 1)
+				{
+					System.out.print("Enter instance name: ");
+					String inst2 = CMAN.input.nextLine();
+					if(inst2.equals("*"))
+					{
+						cman.update_archive();
+						inst = cman.instance;
+					}
+					else
+					{
+						cman.update_archive();
+						if(cman.util.instance_exists(inst2))
+							inst = inst2;
+						else
+						{
+							System.out.println("Instance \"" + inst2 + "\" doesn't exist.");
+							inst = cman.instance;
+						}
+					}
+				}
+				else inst = cman.instance;
 				cman.update_archive();
-				JsonObject[][] updates = cman.upgrade.get_upgrades();
+				JsonObject[][] updates = cman.upgrade.get_upgrades(inst);
 				if(updates.length == 0)
 				{
-					System.out.println("All mods up to date.");
+					System.out.println("No upgrades available.");
 				}
 				else
 				{
@@ -485,6 +611,182 @@ public class CMAN
 				else
 				{
 					System.out.println("Invalid command syntax.");
+				}
+			}
+			else if(command.split(" ")[0].equals("instance") || command.split(" ")[0].equals("inst"))
+			{
+				if(command.split(" ").length == 2)
+				{
+					String name = command.split(" ")[1];
+					if((!cman.instance.equals(name)))
+					{
+						if(cman.util.instance_exists(name))
+						{
+							cman.setup_config(name);
+							System.out.println("Switched to instance " + name + ".");
+						}
+						else
+						{
+							System.out.println("Instance \"" + name + "\" doesn't exist.");
+							System.out.println("You can create it with \"addinstance " + name + "\"");
+						}	
+					}
+					else
+					{
+						System.out.println("You are already using " + name + ".");
+					}
+				}
+				else if(command.split(" ").length == 1)
+				{
+					System.out.print("Enter instance name: ");
+					String name = CMAN.input.nextLine();
+					if((!cman.instance.equals(name)))
+					{
+						if(cman.util.instance_exists(name))
+						{
+							cman.setup_config(name);
+							System.out.println("Switched to instance " + name + ".");
+						}
+						else
+						{
+							System.out.println("Instance \"" + name + "\" doesn't exist.");
+							System.out.println("You can create it with \"addinstance " + name + "\"");
+						}	
+					}
+					else
+					{
+						System.out.println("You are already using " + name + ".");
+					}
+				}
+				else
+				{
+					System.out.println("Invalid command syntax.");
+				}
+			}
+			else if(command.split(" ")[0].equals("setdefaultinstance") || command.split(" ")[0].equals("setdefaultinst"))
+			{
+				if(command.split(" ").length == 2)
+				{
+					String name = command.split(" ")[1];
+					if(cman.util.instance_exists(name))
+					{
+						File defaultfile = new File(cman.execdir + "/LocalData/default_instance.txt");
+						defaultfile.delete();
+						defaultfile.createNewFile();
+						PrintWriter w = new PrintWriter(defaultfile);
+						w.write(name);
+						w.close();
+						System.out.println("Set default instance to " + name + ".");
+					}
+					else
+					{
+						System.out.println("Instance \"" + name + "\" doesn't exist.");
+						System.out.println("You can create it with \"addinstance " + name + "\"");
+					}	
+				}
+				else if(command.split(" ").length == 1)
+				{
+					System.out.print("Enter instance name: ");
+					String name = CMAN.input.nextLine();
+					if(cman.util.instance_exists(name))
+					{
+						File defaultfile = new File(cman.execdir + "/LocalData/default_instance.txt");
+						defaultfile.delete();
+						defaultfile.createNewFile();
+						PrintWriter w = new PrintWriter(defaultfile);
+						w.write(name);
+						w.close();
+						System.out.println("Set default instance to " + name + ".");
+					}
+					else
+					{
+						System.out.println("Instance \"" + name + "\" doesn't exist.");
+						System.out.println("You can create it with \"addinstance " + name + "\"");
+					}	
+				}
+				else
+				{
+					System.out.println("Invalid command syntax.");
+				}
+			}
+			else if(command.split(" ")[0].equals("addinstance") || command.split(" ")[0].equals("addinst"))
+			{
+				if(command.split(" ").length == 2)
+				{
+					String inst = command.split(" ")[1];
+					if(!cman.util.instance_exists(inst))
+					{
+						cman.util.new_config(inst);
+						System.out.println("Created instance \"" + inst + "\"");
+					}
+					else
+					{
+						System.out.println("Instance \"" + inst + "\" already exists.");
+					}
+				}
+				else if(command.split(" ").length == 1)
+				{
+					System.out.print("Enter name: ");
+					String inst = CMAN.input.nextLine();
+					if(!cman.util.instance_exists(inst))
+					{
+						cman.util.new_config(inst);
+						System.out.println("Created instance \"" + inst + "\"");
+					}
+					else
+					{
+						System.out.println("Instance \"" + inst + "\" already exists.");
+					}
+				}
+			}
+			else if(command.split(" ")[0].equals("rminstance") || command.split(" ")[0].equals("removeinstance") || command.split(" ")[0].equals("rminst"))
+			{
+				if(command.split(" ").length == 2)
+				{
+					String inst = command.split(" ")[1];
+					if(cman.util.instance_exists(inst))
+					{
+						System.out.println("Attempting to remove instance \"" + inst + "\"");
+						cman.util.rm_config(inst);
+						cman.setup_config(cman.instance);
+					}
+					else
+					{
+						System.out.println("Instance \"" + inst + "\" doesn't exist.");
+					}
+				}
+				else if(command.split(" ").length == 1)
+				{
+					System.out.print("Enter name: ");
+					String inst = CMAN.input.nextLine();
+					if(cman.util.instance_exists(inst))
+					{
+						System.out.println("Attempting to remove instance \"" + inst + "\"");
+						cman.util.rm_config(inst);
+						cman.setup_config(cman.instance);
+					}
+					else
+					{
+						System.out.println("Instance \"" + inst + "\" doesn't exist.");
+					}
+				}
+			}
+			else if(command.split(" ")[0].equals("instances") || command.split(" ")[0].equals("insts"))
+			{
+				System.out.println("Instances:");
+				JsonElement jsonElement = new JsonParser().parse(new FileReader(cman.execdir + "/LocalData/config.json"));
+				JsonObject j = jsonElement.getAsJsonObject();
+				Set<Entry<String, JsonElement>> entries = j.entrySet();
+				for (Entry<String, JsonElement> entry: entries) 
+				{
+					if(entry.getKey().equals(cman.instance))
+					{
+						System.out.println(entry.getKey() + " (Selected)");
+					}
+					else
+					{
+						System.out.println(entry.getKey());
+					}
 				}
 			}
 			else if(command.split(" ")[0].equals("list"))

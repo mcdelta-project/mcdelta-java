@@ -46,18 +46,20 @@ public class CMAN_install
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
+	public String instance = "@ERROR@";
 	//public static Scanner CMAN.input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	
 	/**
 	Initialization for install.
 	*/
-	public void init_config_install(String mf, String vf, String ed)
+	public void init_config_install(String mf, String vf, String ed, String i)
 	{
 		modfolder = mf;
 		versionsfolder = vf;
 		execdir = ed;
-		this.util.init_config_util(mf, vf, ed);
+		instance = i;
+		this.util.init_config_util(mf, vf, ed, i);
 	}
 	
 	/**
@@ -104,10 +106,10 @@ public class CMAN_install
 		}
 		
 		File originalfile = new File(execdir + "/Data/CMAN-archive/" + modname + ".json");
-		File newfile = new File(execdir + "/LocalData/ModsDownloaded/" + modname + ".installed");
-		if(!new File(execdir + "/LocalData/ModsDownloaded/").exists())
+		File newfile = new File(execdir + "/LocalData/ModsDownloaded/" + instance + "/" + modname + ".installed");
+		if(!new File(execdir + "/LocalData/ModsDownloaded/" + instance).exists())
 		{
-			new File(execdir + "/LocalData/ModsDownloaded/").mkdirs();
+			new File(execdir + "/LocalData/ModsDownloaded/" + instance).mkdirs();
 		}
 		try 
 		{
@@ -127,7 +129,7 @@ public class CMAN_install
 		String[] requirements = util.get_deps(modname);
 		for (String requirement : requirements)
 		{
-			if(!new File(execdir + "/LocalData/ModsDownloaded/" + requirement + ".installed").exists())
+			if(!new File(execdir + "/LocalData/ModsDownloaded/" + instance + "/" + requirement + ".installed").exists())
 			{
 				System.out.println("You must install " + requirement + " first!");
 				System.out.print("Do you want to install it? (y or n)");
@@ -145,7 +147,7 @@ public class CMAN_install
 		ArrayList<String> recommendations = gson.fromJson(json_data.get("Recommended").getAsJsonArray().toString(), new TypeToken<ArrayList<String>>(){}.getType());
 		for (String recommendation : recommendations)
 		{
-			if(!new File(execdir + "/LocalData/ModsDownloaded/" + recommendation + ".installed").exists())
+			if(!new File(execdir + "/LocalData/ModsDownloaded/" + instance + "/" + recommendation + ".installed").exists())
 			{
 				System.out.println(modname + " recommends installing " + recommendation + "!");
 			}
@@ -159,7 +161,7 @@ public class CMAN_install
 		ArrayList<String> incompatibilities = gson.fromJson(json_data.get("Incompatibilities").getAsJsonArray().toString(), new TypeToken<ArrayList<String>>(){}.getType());
 		for(String incompatibility : incompatibilities)
 		{
-			if(new File(execdir + "/LocalData/ModsDownloaded/" + incompatibility + ".installed").exists())
+			if(new File(execdir + "/LocalData/ModsDownloaded/" + instance + "/" + incompatibility + ".installed").exists())
 			{
 				System.out.println("You cannot have " + incompatibility + " and " + modname + " installed at the same time!");
 				return;

@@ -57,16 +57,18 @@ public class CMAN_util
 	public String modfolder = error;
 	public String versionsfolder = error;
 	public String execdir = error;
+	public String instance = error;
 	//static Inputs CMAN.input = CMAN.CMAN.input;
 	
 	/**
 	Initialization for util.
 	*/
-	public void init_config_util(String mf, String vf, String ed)
+	public void init_config_util(String mf, String vf, String ed, String i)
 	{
 		modfolder = mf;
 		versionsfolder = vf;
 		execdir = ed;
+		instance = i;
 	}
 	
 	public void delete_recursivly(String dir) throws IOException
@@ -194,34 +196,56 @@ public class CMAN_util
 	            JsonParser parser = new JsonParser();
 	            JsonElement jsonElement = parser.parse(new FileReader(jsonfile.getAbsoluteFile()));
 	            JsonObject j = jsonElement.getAsJsonObject();
-	            JsonElement mfolder = j.get("modfolder");
-	            if(!mfolder.isJsonNull())
+	            if(instance_exists(instance))
 	            {
-	            	mFolder = mfolder.getAsString();
+	            	JsonObject inst = j.getAsJsonObject(instance);
+		            JsonElement mfolder = inst.get("modfolder");
+		            if(inst.has("modfolder"))
+		            {
+		            	mFolder = mfolder.getAsString();
+		            }
+		            else
+		            {
+		            	System.out.println("Enter mod folder location (absolute path): ");
+		            	mFolder = CMAN.input.nextLine();
+		            	JsonElement mfelement = new JsonParser().parse(mFolder);
+		            	j.getAsJsonObject(instance).add("modfolder", mfelement);
+		            }
+		            JsonElement vfolder = inst.get("versionsfolder");
+		            if(inst.has("versionsfolder"))
+		            {
+		            	vFolder = vfolder.getAsString();
+		            }
+		            else
+		            {
+		            	System.out.println("Enter mod version folder location (absolute path): ");
+		            	vFolder = CMAN.input.nextLine();
+		            	JsonElement vfelement = new JsonParser().parse("\"" + vFolder + "\"");
+		            	j.getAsJsonObject(instance).add("versionsfolder", vfelement);
+		            }
+		            
+		            FileWriter fw = new FileWriter(jsonfile, false);
+		            fw.write(gson.toJson(j));
+		            fw.close();
 	            }
 	            else
 	            {
-	            	System.out.println("Enter mod folder location (absolute path): ");
+	            	System.out.println("Instance \"" + instance + "\" not found.");
+	            	System.out.print("Enter mod folder location (absolute path): ");
 	            	mFolder = CMAN.input.nextLine();
-	            	JsonElement mfelement = new JsonParser().parse(mFolder);
-	            	j.add("modfolder", mfelement);
-	            }
-	            JsonElement vfolder = j.get("versionsfolder");
-	            if(!vfolder.isJsonNull())
-	            {
-	            	vFolder = vfolder.getAsString();
-	            }
-	            else
-	            {
-	            	System.out.println("Enter mod version folder location (absolute path): ");
+	            	System.out.print("Enter mod version folder location (absolute path): ");
 	            	vFolder = CMAN.input.nextLine();
-	            	JsonElement vfelement = new JsonParser().parse(vFolder);
-	            	j.add("versionfolder", vfelement);
+	            	JsonObject inst = new JsonObject();
+	            	System.out.println(mFolder);
+	            	JsonElement mElement = new JsonParser().parse("\"" + mFolder + "\"");
+	            	JsonElement vElement = new JsonParser().parse("\"" + vFolder + "\"");
+	            	inst.add("modfolder", mElement);
+	            	inst.add("versionsfolder", vElement);
+	            	j.add(instance, inst);
+		            FileWriter fw = new FileWriter(jsonfile, false);
+		            fw.write(gson.toJson(j));
+		            fw.close();
 	            }
-	            
-	            FileWriter fw = new FileWriter(jsonfile, false);
-	            fw.write(gson.toJson(j));
-	            fw.close();
 			}
 			catch (FileNotFoundException e) 
 			{
@@ -243,7 +267,7 @@ public class CMAN_util
             try 
             {
             	FileWriter fw = new FileWriter(jsonfile, false);
-				fw.write("{\"modfolder\":\"" + mFolder + "\",\"versionsfolder\":\"" + vFolder + "\"}");
+				fw.write("{\"" + instance + "\":{\"modfolder\":\"" + mFolder + "\",\"versionsfolder\":\"" + vFolder + "\"}}");
 				fw.close();
 			} 
             catch (IOException e) 
@@ -311,12 +335,12 @@ public class CMAN_util
 	*/
 	public JsonObject get_installed_json(String modname)
 	{
-		if(!Files.exists(Paths.get(execdir + "/LocalData/ModsDownloaded"), LinkOption.NOFOLLOW_LINKS))
+		if(!Files.exists(Paths.get(execdir + "/LocalData/ModsDownloaded/" + instance), LinkOption.NOFOLLOW_LINKS))
 		{
 			return null;
 		}
 		
-		File jsonfile = new File(execdir + "/LocalData/ModsDownloaded" + modname + ".installed");
+		File jsonfile = new File(execdir + "/LocalData/ModsDownloaded/" + instance + "/" + modname + ".installed");
 		if(jsonfile.exists())
 		{
             JsonParser parser = new JsonParser();
@@ -355,11 +379,11 @@ public class CMAN_util
 	*/
 	public boolean mod_installed(String modname)
 	{
-		if(!Files.exists(Paths.get(execdir + "/LocalData/ModsDownloaded"), LinkOption.NOFOLLOW_LINKS))
+		if(!Files.exists(Paths.get(execdir + "/LocalData/ModsDownloaded/" + instance), LinkOption.NOFOLLOW_LINKS))
 		{
 			return false;
 		}
-		if(new File(execdir + "/LocalData/ModsDownloaded/" + modname + ".installed").exists())
+		if(new File(execdir + "/LocalData/ModsDownloaded/" + instance + "/" + modname + ".installed").exists())
 		{
 			return true;
 		}
@@ -369,17 +393,22 @@ public class CMAN_util
 		}
 	}
 	
+	public JsonObject[] get_installed_jsons()
+	{
+		return get_installed_jsons(instance);
+	}
+	
 	/**
 	Returns an array of the json files for all of the installed mods.
 	*/
-	public JsonObject[] get_installed_jsons()
+	public JsonObject[] get_installed_jsons(String inst)
 	{
-		if(new File(execdir + "/LocalData/ModsDownloaded").exists())
+		if(new File(execdir + "/LocalData/ModsDownloaded/" + inst).exists())
 		{
-			File[] jsons = new File(execdir + "/LocalData/ModsDownloaded").listFiles();
+			File[] jsons = new File(execdir + "/LocalData/ModsDownloaded/" + inst).listFiles();
 			String[] names = new String[jsons.length];
 			JsonObject[] json = new JsonObject[jsons.length];
-			int dirlength = new String(execdir + "/LocalData/ModsDownloaded/").length();
+			int dirlength = new String(execdir + "/LocalData/ModsDownloaded/" + inst + "/").length();
 			int i = 0;
 			for(File f : jsons)
 			{
@@ -491,5 +520,105 @@ public class CMAN_util
 			}
 		}
 		return deps;
+	}
+	
+	public boolean instance_exists(String inst)
+	{
+		
+		File jsonfile = new File(execdir + "/LocalData/config.json");
+		if(jsonfile.exists())
+		{
+            JsonParser parser = new JsonParser();
+            JsonElement jsonElement;
+			try 
+			{
+				jsonElement = parser.parse(new FileReader(jsonfile.getAbsoluteFile()));
+				JsonObject j = jsonElement.getAsJsonObject();
+				if(j.has(inst))
+				{
+					return true;
+				}
+			} 
+			catch (JsonIOException e) 
+			{
+				System.out.println("The config JSON appears to be invalid. Delete it and run CMAN again.");
+				return false;
+			} 
+			catch (JsonSyntaxException e) 
+			{
+				System.out.println("The config JSON appears to be invalid. Delete it and run CMAN again.");
+				return false;
+			} 
+			catch (FileNotFoundException e) 
+			{
+				System.out.println("\"config.json\" " + "doesn't exist.");
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	public String[] new_config(String _instance)
+	{
+		Gson gson = new Gson();
+		JsonParser parser = new JsonParser();
+		JsonElement jsonElement;
+		try 
+		{
+			jsonElement = parser.parse(new FileReader(execdir + "/LocalData/config.json"));
+	        JsonObject j = jsonElement.getAsJsonObject();
+	        if(!j.has(_instance))
+	        {
+	        	System.out.print("Enter mod folder (absolute path): ");
+	        	String mf = CMAN.input.nextLine();
+	        	JsonElement mfelement = new JsonParser().parse("\"" + mf + "\"");
+	        	System.out.print("Enter versions folder (absolute path): ");
+	        	String vf = CMAN.input.nextLine();
+	        	JsonElement vfelement = new JsonParser().parse("\"" + vf + "\"");
+	        	JsonObject instobj = new JsonObject();
+	        	instobj.add("modfolder", mfelement);
+	        	instobj.add("versionsfolder", vfelement);
+	        	j.add(_instance, instobj);
+	            FileWriter fw = new FileWriter(execdir + "/LocalData/config.json", false);
+	            fw.write(gson.toJson(j));
+	            fw.close();
+	            System.out.println("Done");
+	            return new String[] {mf, vf};
+	        }
+		} 
+		catch (JsonIOException | JsonSyntaxException | IOException e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void rm_config(String _instance)
+	{
+		if(instance.equals(_instance))
+		{
+			System.out.println("Cannot remove instance while it is active! Select another instance first.");
+			return;
+		}
+		Gson gson = new Gson();
+		JsonParser parser = new JsonParser();
+		JsonElement jsonElement;
+		try 
+		{
+			jsonElement = parser.parse(new FileReader(execdir + "/LocalData/config.json"));
+	        JsonObject j = jsonElement.getAsJsonObject();
+	        if(j.has(_instance))
+	        {
+	        	j.remove(_instance);
+	            FileWriter fw = new FileWriter(execdir + "/LocalData/config.json", false);
+	            fw.write(gson.toJson(j));
+	            fw.close();
+	            System.out.println("Done");
+	        }
+		} 
+		catch (JsonIOException | JsonSyntaxException | IOException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 }

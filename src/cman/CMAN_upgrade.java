@@ -32,6 +32,7 @@ public class CMAN_upgrade
 	public String modfolder = "@ERROR@";
 	public String versionsfolder = "@ERROR@";
 	public String execdir = "@ERROR@";
+	public String instance = "@ERROR@";
 	//public static Scanner CMAN.input = new Scanner(System.in);
 	CMAN_util util = new CMAN_util();
 	CMAN_remove remove = new CMAN_remove();
@@ -40,14 +41,15 @@ public class CMAN_upgrade
 	/**
 	Initialization for upgrade.
 	*/
-	public void init_config_upgrade(String mf, String vf, String ed)
+	public void init_config_upgrade(String mf, String vf, String ed, String i)
 	{
 		modfolder = mf;
 		versionsfolder = vf;
 		execdir = ed;
-		this.util.init_config_util(mf, vf, ed);
-		this.remove.init_config_remove(mf, vf, ed);
-		this.install.init_config_install(mf, vf, ed);
+		instance = i;
+		this.util.init_config_util(mf, vf, ed, i);
+		this.remove.init_config_remove(mf, vf, ed, i);
+		this.install.init_config_install(mf, vf, ed, i);
 	}
 	
 	/**
@@ -61,7 +63,7 @@ public class CMAN_upgrade
 			modname = CMAN.input.nextLine();
 		}
 		JsonObject[] update = {util.get_installed_json(modname), util.get_json(modname)};
-		if(new File(execdir + "/LocalData/ModsDownloaded" + modname + ".installed").exists())
+		if(new File(execdir + "/LocalData/ModsDownloaded/" + instance + "/" + modname + ".installed").exists())
 		{
 			System.out.println(modname + ".installed found");
 		}
@@ -87,15 +89,21 @@ public class CMAN_upgrade
 		}
 	}
 	
+	public JsonObject[][] get_upgrades()
+	{
+		return get_upgrades(instance);
+	}
+	
 	/**
 	Returns a 2D array. 1st coordinate is the upgrade set, 2nd has current installed version (0) and latest version (1)
 	*/
-	public JsonObject[][] get_upgrades()
+	public JsonObject[][] get_upgrades(String inst)
 	{
 		ArrayList<JsonObject[]> updates = new ArrayList<JsonObject[]>();
 		if(!(util.get_installed_jsons() == null))
 		{
-			JsonObject[] mods = util.get_installed_jsons();
+			JsonObject[] mods = util.get_installed_jsons(inst);
+			if(mods != null)
 			for(JsonObject mod : mods)
 			{
 				if(mod != null)
@@ -118,12 +126,16 @@ public class CMAN_upgrade
 		return new JsonObject[0][2];
 	}
 	
+	public void check_upgrades(boolean full)
+	{
+		check_upgrades(full, instance);
+	}
 	/**
 	Checks if upgrades are available. Full shows list of all upgradable mods in console.
 	*/
-	public void check_upgrades(boolean full)
+	public void check_upgrades(boolean full, String inst)
 	{
-		JsonObject[][] updates = get_upgrades();
+		JsonObject[][] updates = get_upgrades(inst);
 		if(updates.length > 0)
 		{
 			if(!full)
